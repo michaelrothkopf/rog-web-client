@@ -1,0 +1,31 @@
+h1 {
+  font-size: xx-large;
+  font-weight: 400;
+}
+
+.home-grid {
+  width: 100%;
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+.home-grid-element {
+  aspect-ratio: 2 / 1;
+  padding: 1rem;
+
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+
+  overflow: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.home-grid-element::-webkit-scrollbar {
+  display: none;
+}
+.home-grid-element h2 {
+  font-size: x-large;
+  font-weight: light;
+}

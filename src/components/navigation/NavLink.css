@@ -1,0 +1,12 @@
+.nav-button {
+  user-select: none;
+  cursor: pointer;
+
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--bg-primary);
+  transition: border-color 0.2s;
+}
+
+.nav-button:hover {
+  border-color: var(--text-highlight);
+}
