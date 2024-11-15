@@ -77,10 +77,6 @@ function HilarGame() {
   }
 
   const handleResponse = (response: string) => {
-    // Update the state
-    if (responses.length === 1) {
-      setRoundStage(RoundStage.LOAD);
-    }
     setResponses(responses.concat([response]));
     setQuestions(questions.slice(1));
 
@@ -89,6 +85,9 @@ function HilarGame() {
       globalState.socket.emit('hilarQuestionResponse', {
         responseText: response,
       });
+
+      // Remove the sent responses from state
+      setResponses([]);
     }
   };
 
@@ -159,6 +158,7 @@ function HilarGame() {
         typeof data.newScore2 !== 'number' ||
         typeof data.scoreChange !== 'number'
       ) {
+        console.error('HVR result error');
         return;
       }
 
@@ -192,10 +192,16 @@ function HilarGame() {
   }
 
   // If currently in question mode
-  if (roundStage === RoundStage.RESPOND) {
+  if (roundStage === RoundStage.RESPOND && questions.length > 0) {
     return (
       <div className='hilar-game'>
         <QuestionPrompt prompt={questions[0]} submitCallback={handleResponse} />
+      </div>
+    );
+  } else if (roundStage === RoundStage.RESPOND) {
+    return (
+      <div className='hilar-game'>
+        <p>Waiting for other responses...</p>
       </div>
     );
   }
@@ -205,6 +211,7 @@ function HilarGame() {
     return (
       <div className='hilar-game'>
         <VoteBox
+          prompt={voteData.prompt}
           voteCallback={handleVote}
           firstOption={voteData.options[0]}
           secondOption={voteData.options[1]}
@@ -240,7 +247,7 @@ function HilarGame() {
   // roundStage === RoundStage.LOAD
   return (
     <div className='hilar-game'>
-      <p>Waiting for other responses...</p>
+      <p>Waiting...</p>
     </div>
   );
 }
