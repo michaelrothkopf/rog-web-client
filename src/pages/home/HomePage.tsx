@@ -4,6 +4,7 @@ import FriendRequestBox from './FriendRequestBox';
 import JoinGameBox from './JoinGameBox';
 
 import './Home.css';
+import SettingsBox from './SettingsBox';
 
 function HomePage() {
   return (
@@ -14,6 +15,7 @@ function HomePage() {
         <FriendRequestBox />
         <CreateGameBox />
         <JoinGameBox />
+        <SettingsBox />
       </div>
     </div>
   );

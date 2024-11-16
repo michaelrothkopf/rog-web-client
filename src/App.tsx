@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import './pages/global/App.css';
 
 // Zustand hook-based global states
+import { ColorScheme, useSettingStore } from './hooks/settingStore';
 import { useAuthStore } from './hooks/authStore';
 import { CurrentPage, useNavigationStore } from './hooks/navigationStore';
 import { useFriendStore } from './hooks/friendStore';
@@ -23,6 +24,8 @@ import HilarGame from './pages/games/hilar/HilarGame';
 import { attemptJsonParse } from './utils';
 
 function App() {
+  const colorScheme = useSettingStore((state) => state.colorScheme);
+
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const authenticate = useAuthStore((state) => state.authenticate);
 
@@ -35,6 +38,18 @@ function App() {
   const setGame = useGameStore((state) => state.setGame);
   const setPlayers = useGameStore((state) => state.setPlayers);
   const beginGame = useGameStore((state) => state.beginGame);
+
+  useEffect(() => {
+    // Set the document body background color
+    if (colorScheme === ColorScheme.LIGHT) {
+      document.body.classList.remove(`${ColorScheme.DARK}-bg`);
+      document.body.classList.add(`${ColorScheme.LIGHT}-bg`);
+    }
+    if (colorScheme === ColorScheme.DARK) {
+      document.body.classList.remove(`${ColorScheme.LIGHT}-bg`);
+      document.body.classList.add(`${ColorScheme.DARK}-bg`);
+    }
+  }, [colorScheme]);
 
   // Attempt to login using existing information
   useEffect(() => {
@@ -150,7 +165,7 @@ function App() {
 
   if (!isAuthenticated) {
     return (
-      <div className='light-mode'>
+      <div className={colorScheme}>
         <AuthPage />
       </div>
     );
@@ -158,14 +173,14 @@ function App() {
 
   if (currentPage === CurrentPage.HILAR) {
     return (
-      <div className='light-mode'>
+      <div className={colorScheme}>
         <HilarGame />
       </div>
     );
   }
 
   return (
-    <div className='light-mode'>
+    <div className={colorScheme}>
       <NavBar />
       {currentPage === CurrentPage.HOME ? <HomePage /> : <></>}
     </div>
