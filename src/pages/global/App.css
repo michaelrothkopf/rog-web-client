@@ -6,6 +6,7 @@
   --text-highlight: rgb(70, 70, 70);
   --text-link: rgb(11, 124, 200);
   --text-link-hover: rgb(0, 66, 111);
+  --text-green: rgb(19, 172, 19);
 
   --input-border: rgb(210, 210, 210);
   --input-bg: rgb(255, 255, 255);
@@ -42,6 +43,7 @@ button {
   border-radius: 4px;
 
   cursor: pointer;
+  user-select: none;
   background-color: var(--button-bg);
   transition: background-color 0.2s;
 }
@@ -72,4 +74,14 @@ select:hover {
 }
 select:active {
   background-color: var(--button-bg-active);
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0%;
+  }
+  
+  100% {
+    opacity: 100%;
+  }
 }

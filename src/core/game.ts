@@ -3,11 +3,13 @@ import { globalState } from './global';
 export interface GameMetadata {
   gameId: string;
   friendlyName: string;
+  minPlayers: number;
+  maxPlayers: number;
 }
 
 export const AVAILABLE_GAMES: GameMetadata[] = [
-  { gameId: 'HILAR', friendlyName: 'Hilar' },
-  { gameId: 'DEV', friendlyName: 'DO NOT USE' },
+  { gameId: 'HILAR', friendlyName: 'Hilar', minPlayers: 2, maxPlayers: 8 },
+  { gameId: 'DEV', friendlyName: 'DO NOT USE', minPlayers: 1, maxPlayers: 10 },
 ];
 
 export const createGame = (gameId: string) => {

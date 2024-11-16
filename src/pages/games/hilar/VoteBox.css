@@ -1,0 +1,29 @@
+.vote-box {
+  text-align: center;
+  user-select: none;
+}
+
+.vote-box > h2 {
+  margin-bottom: 3rem;
+  font-size: x-large;
+  font-weight: 400;
+}
+
+.vote-box > .vote-options {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 1rem;
+}
+
+.vote-box > .vote-options > button {
+  aspect-ratio: 4 / 1;
+  font-size: large;
+  word-wrap: break-word;
+  font-weight: 300;
+  white-space: normal;
+
+  border: none;
+  padding: 1rem;
+}

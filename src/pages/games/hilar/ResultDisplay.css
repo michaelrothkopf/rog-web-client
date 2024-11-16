@@ -1,0 +1,63 @@
+.result-display {
+  user-select: none;
+
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: baseline;
+  align-items: center;
+  text-align: center;
+}
+
+.result-display > .user-result {
+  flex: 1;
+  text-align: center;
+}
+
+.result-display > .user-result > .username {
+  font-size: xx-large;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.result-display > .user-result > .username.username--winner {
+  animation: usernameColorAnimation ease 1.5s;
+  animation-delay: 0.5s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+@keyframes usernameColorAnimation {
+  0% {
+    color: var(--text-primary);
+  }
+
+  100% {
+    color: var(--text-green);
+  }
+}
+
+.result-display > .user-result > .score {
+  display: block;
+  margin-bottom: 0.4rem;
+
+  font-size: larger; 
+  font-weight: 300;
+}
+
+.result-display > .user-result > .score-change {
+  font-weight: 300;
+}
+
+.result-display > .user-result > .score-change.score-change--winner {
+  opacity: 0%;
+  animation: fadeIn ease 1.5s;
+  animation-delay: 0.5s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+.result-display > .user-result > .score-change.score-change--loser {
+  opacity: 0%;
+}

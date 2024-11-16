@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import './QuestionPrompt.css';
 
 interface QuestionPromptProps {
   prompt: string;
@@ -26,6 +27,7 @@ function QuestionPrompt(props: QuestionPromptProps) {
       method='post'
       className='question-prompt'
       onSubmit={handleSubmitQuestion}
+      autoComplete='off'
     >
       <h2>{props.prompt}</h2>
       <input
@@ -34,6 +36,8 @@ function QuestionPrompt(props: QuestionPromptProps) {
         id='response'
         value={responseText}
         onChange={(e) => setResponseText(e.currentTarget.value)}
+        placeholder='Come up with something clever'
+        autoFocus
       />
       <button type='submit'>Submit Answer</button>
     </form>

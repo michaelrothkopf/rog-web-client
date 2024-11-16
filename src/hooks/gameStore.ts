@@ -9,6 +9,7 @@ export interface GameState {
   isHost: boolean;
 
   setGame(newGameId: string, newJoinCode: string, newPlayers: User[], isHost?: boolean): void;
+  setPlayers(newPlayers: User[]): void;
   beginGame(): void;
 }
 
@@ -26,6 +27,9 @@ export const useGameStore = create<GameState>((set) => ({
     players: newPlayers,
     hasStarted: false,
     isHost: isHost || false,
+  }),
+  setPlayers: (newPlayers: User[]) => set({
+    players: newPlayers,
   }),
   beginGame: () => set({
     hasStarted: true,

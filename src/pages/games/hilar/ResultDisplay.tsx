@@ -1,3 +1,5 @@
+import './ResultDisplay.css';
+
 interface ResultDisplayProps {
   results: {
     winner: number;
@@ -13,41 +15,75 @@ function ResultDisplay(props: ResultDisplayProps) {
   if (props.results.winner === 1) {
     return (
       <div className='result-display'>
-        <span className='winner-username'>
-          {props.results.p1name}{' '}
-          <span className='score-change'>{props.results.scoreChange}</span>
-        </span>
-        <span className='loser-username'>{props.results.p2name}</span>
-        <span className='winner-score'>{props.results.newScore1}</span>
-        <span className='loser-score'>{props.results.newScore2}</span>
+        <div className='user-result'>
+          <div className='username username--winner'>
+            {props.results.p1name}
+          </div>
+          <span className='score score--winner'>
+            {props.results.newScore1} pts
+          </span>
+          <span className='score-change score-change--winner'>
+            +{props.results.scoreChange}
+          </span>
+        </div>
+        <div className='user-result'>
+          <div className='username username--loser'>{props.results.p2name}</div>
+          <span className='score score--loser'>
+            {props.results.newScore2} pts
+          </span>
+          <span className='score-change score-change--loser'>
+            +{props.results.scoreChange}
+          </span>
+        </div>
       </div>
     );
   }
   if (props.results.winner === 2) {
     return (
       <div className='result-display'>
-        <span className='loser-username'>{props.results.p1name}</span>
-        <span className='winner-username'>
-          {props.results.p2name}{' '}
-          <span className='score-change'>{props.results.scoreChange}</span>
-        </span>
-        <span className='loser-score'>{props.results.newScore1}</span>
-        <span className='winner-score'>{props.results.newScore2}</span>
+        <div className='user-result'>
+          <div className='username username--loser'>{props.results.p1name}</div>
+          <span className='score score--loser'>
+            {props.results.newScore1} pts
+          </span>
+          <span className='score-change score-change--loser'>
+            +{props.results.scoreChange}
+          </span>
+        </div>
+        <div className='user-result'>
+          <div className='username username--winner'>
+            {props.results.p2name}
+          </div>
+          <span className='score score--winner'>
+            {props.results.newScore2} pts
+          </span>
+          <span className='score-change score-change--winner'>
+            +{props.results.scoreChange}
+          </span>
+        </div>
       </div>
     );
   }
   return (
     <div className='result-display'>
-      <span className='winner-username'>
-        {props.results.p1name}{' '}
-        <span className='score-change'>{props.results.scoreChange}</span>
-      </span>
-      <span className='winner-username'>
-        {props.results.p2name}{' '}
-        <span className='score-change'>{props.results.scoreChange}</span>
-      </span>
-      <span className='winner-score'>{props.results.newScore1}</span>
-      <span className='winner-score'>{props.results.newScore2}</span>
+      <div className='user-result'>
+        <div className='username username--winner'>{props.results.p1name}</div>
+        <span className='score score--winner'>
+          {props.results.newScore1} pts
+        </span>
+        <span className='score-change score-change--winner'>
+          +{props.results.scoreChange}
+        </span>
+      </div>
+      <div className='user-result'>
+        <div className='username username--winner'>{props.results.p2name}</div>
+        <span className='score score--winner'>
+          {props.results.newScore2} pts
+        </span>
+        <span className='score-change score-change--winner'>
+          +{props.results.scoreChange}
+        </span>
+      </div>
     </div>
   );
 }

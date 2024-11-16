@@ -1,17 +1,26 @@
+// Basic page functionality
 import { useEffect } from 'react';
 import './pages/global/App.css';
-import { resetAuthData, setupAuth, validateUser } from './core/auth';
-import NavBar from './components/navigation/NavBar';
-import HomePage from './pages/home/HomePage';
-import AuthPage from './pages/auth/AuthPage';
-import { attemptJsonParse } from './utils';
+
+// Zustand hook-based global states
 import { useAuthStore } from './hooks/authStore';
 import { CurrentPage, useNavigationStore } from './hooks/navigationStore';
 import { useFriendStore } from './hooks/friendStore';
-import { getFriendList, getFriendRequestsList } from './core/friends';
 import { useGameStore } from './hooks/gameStore';
+
+// Core logic for server-dependent actions
+import { resetAuthData, setupAuth, validateUser } from './core/auth';
+import { getFriendList, getFriendRequestsList } from './core/friends';
 import { globalState } from './core/global';
+
+// Renderers for application components
+import NavBar from './components/navigation/NavBar';
+import HomePage from './pages/home/HomePage';
+import AuthPage from './pages/auth/AuthPage';
 import HilarGame from './pages/games/hilar/HilarGame';
+
+// Utilities
+import { attemptJsonParse } from './utils';
 
 function App() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -24,6 +33,7 @@ function App() {
   const setFriendRequests = useFriendStore((state) => state.setFriendRequests);
 
   const setGame = useGameStore((state) => state.setGame);
+  const setPlayers = useGameStore((state) => state.setPlayers);
   const beginGame = useGameStore((state) => state.beginGame);
 
   // Attempt to login using existing information
@@ -104,6 +114,20 @@ function App() {
         }
       });
 
+      globalState.socket.on('gamePlayers', (data) => {
+        if (
+          !Array.isArray(data.players) ||
+          data.players.length <= 0 ||
+          typeof data.players[0].userId !== 'string' ||
+          typeof data.players[0].displayName !== 'string'
+        ) {
+          return;
+        }
+
+        // Update the players list
+        setPlayers(data.players);
+      });
+
       // When a game starts
       globalState.socket.on('gameBegin', () => {
         beginGame();
@@ -121,6 +145,7 @@ function App() {
     setGame,
     navigate,
     beginGame,
+    setPlayers,
   ]);
 
   if (!isAuthenticated) {

@@ -1,0 +1,16 @@
+.question-prompt {
+  text-align: center;
+  user-select: none;
+}
+
+.question-prompt > h2 {
+  margin-bottom: 3rem;
+  font-size: x-large;
+  font-weight: 400;
+}
+
+.question-prompt > input {
+  display: block;
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
