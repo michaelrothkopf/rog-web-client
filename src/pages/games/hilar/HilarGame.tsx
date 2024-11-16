@@ -170,14 +170,12 @@ function HilarGame() {
     globalState.socket.on('hilarLeaderboard', (data) => {
       // Validate the response object
       if (
-        !data.standings ||
         !Array.isArray(data.standings) ||
         !(data.standings.length > 0) ||
-        !data.standings[0].userId ||
         typeof data.standings[0].userId !== 'string' ||
-        !data.standings[0].score ||
         typeof data.standings[0].score !== 'number'
       ) {
+        console.error('leaderboard failure');
         return;
       }
 
@@ -218,7 +216,7 @@ function HilarGame() {
         />
       </div>
     );
-  } else if (voteData.options.length > 0) {
+  } else if (roundStage === RoundStage.VOTE && voteData.options.length > 0) {
     return (
       <div className='hilar-game'>
         <p>Waiting for votes...</p>
