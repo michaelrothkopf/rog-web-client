@@ -16,7 +16,8 @@ export enum RoundStage {
 
 const PLAYER_COLOR = Color.fromHex('#086621');
 const ENEMY_COLOR = Color.fromHex('#850505');
-const PLAYER_WIDTH = 25;
+const PLAYER_RADIUS = 10;
+const PLAYER_WIDTH = PLAYER_RADIUS * 2;
 
 const PLAYER_UI_FONT = '16px sans-serif';
 
@@ -56,6 +57,13 @@ class Player extends GameObject {
 
     // Draw the UI
     this.drawUi(ctx);
+  }
+
+  draw(ctx: CanvasRenderingContext2D): void {
+    ctx.beginPath();
+    ctx.arc(this.xPos, this.yPos, PLAYER_RADIUS, 0, 2 * Math.PI);
+    ctx.fillStyle = this.drawColor.toRgbString();
+    ctx.fill();
   }
 
   drawUi(ctx: CanvasRenderingContext2D): void {
@@ -140,5 +148,13 @@ export class DuelEngine extends GameEngine {
       if (!p) continue;
       p.ready = rs.ready;
     }
+  }
+
+  updatePlayerState(userId: string, xPos: number, yPos: number, health: number) {
+    const p = this.players.find(p => p.userId === userId);
+    if (!p) return;
+    p.xPos = xPos;
+    p.yPos = yPos;
+    p.health = health;
   }
 }

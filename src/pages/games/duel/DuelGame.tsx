@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { globalState } from '../../../core/global';
-import { useGameStore } from '../../../hooks/gameStore';
+import { gameStateHooks, useGameStore } from '../../../hooks/gameStore';
 
 import './DuelGame.css';
 import WaitScreen from '../WaitScreen';
 import { DuelEngine, MAP_H, MAP_W, RoundStage } from './DuelEngine';
+import { User } from '../../../core/auth';
 
 function DuelGame(props: { devBypass?: boolean }) {
   const hasStarted = useGameStore((state) => state.hasStarted);
@@ -36,6 +37,11 @@ function DuelGame(props: { devBypass?: boolean }) {
       setInterval(() => {
         if (engine.current) engine.current.render();
       }, 10);
+    }
+
+    // Set the game players update hook
+    gameStateHooks.onGamePlayers = (players: User[]) => {
+
     }
   }, [hasStarted]);
 
@@ -76,11 +82,20 @@ function DuelGame(props: { devBypass?: boolean }) {
       }
     });
   }
-  // Ready up listeners
+  // Ready up listener
   if (!globalState.socket.hasListeners('duelReadyState')) {
     globalState.socket.on('duelReadyState', (data) => {
       if (!data.readyData || !data.allReady) return;
-      engine.current?.updateReady(data.readyData);
+      if (!engine.current) return;
+      engine.current.updateReady(data.readyData);
+    });
+  }
+  // Position update listener
+  if (!globalState.socket.hasListeners('duelPlayerState')) {
+    globalState.socket.on('duelPlayerState', (data) => {
+      if (!data.userId || !data.xPos || !data.yPos || !data.health) return;
+      if (!engine.current) return;
+      engine.current.updatePlayerState(data.userId, data.xPos, data.yPos, data.health);
     });
   }
 

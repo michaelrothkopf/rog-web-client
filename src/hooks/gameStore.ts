@@ -1,6 +1,10 @@
 import { create } from 'zustand';
 import { User } from '../core/auth';
 
+export const gameStateHooks = {
+  onGamePlayers: (players: User[]) => { players; },
+};
+
 export interface GameState {
   gameId: string;
   joinCode: string;

@@ -7,7 +7,7 @@ import { ColorScheme, useSettingStore } from './hooks/settingStore';
 import { useAuthStore } from './hooks/authStore';
 import { CurrentPage, useNavigationStore } from './hooks/navigationStore';
 import { useFriendStore } from './hooks/friendStore';
-import { useGameStore } from './hooks/gameStore';
+import { gameStateHooks, useGameStore } from './hooks/gameStore';
 
 // Core logic for server-dependent actions
 import { resetAuthData, setupAuth, validateUser } from './core/auth';
@@ -139,6 +139,9 @@ function App() {
         ) {
           return;
         }
+
+        // Call the callback
+        gameStateHooks.onGamePlayers(data.players);
 
         // Update the players list
         setPlayers(data.players);
