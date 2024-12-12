@@ -19,6 +19,7 @@ import NavBar from './components/navigation/NavBar';
 import HomePage from './pages/home/HomePage';
 import AuthPage from './pages/auth/AuthPage';
 import HilarGame from './pages/games/hilar/HilarGame';
+import DuelGame from './pages/games/duel/DuelGame';
 
 // Utilities
 import { attemptJsonParse } from './utils';
@@ -175,6 +176,13 @@ function App() {
     return (
       <div className={colorScheme}>
         <HilarGame />
+      </div>
+    );
+  }
+  if (currentPage === CurrentPage.DUEL) {
+    return (
+      <div className={colorScheme}>
+        <DuelGame />
       </div>
     );
   }

@@ -7,6 +7,7 @@ export enum CurrentPage {
 
   // Games
   HILAR,
+  DUEL,
 }
 
 interface NavigationState {

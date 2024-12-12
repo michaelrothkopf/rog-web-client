@@ -99,7 +99,7 @@ function HilarGame() {
       canVote: false,
     });
 
-    // send the vote tot he server
+    // send the vote to the server
     if (globalState.socket) {
       globalState.socket.emit('hilarVote', {
         vote,
