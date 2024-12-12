@@ -1,3 +1,4 @@
+import { User } from "../../../core/auth";
 import { Color } from "../core/Color";
 import { GameEngine } from "../core/GameEngine";
 import { GameObject } from "../core/GameObject";
@@ -148,6 +149,10 @@ export class DuelEngine extends GameEngine {
       if (!p) continue;
       p.ready = rs.ready;
     }
+  }
+
+  updateGamePlayers(players: User[]) {
+    
   }
 
   updatePlayerState(userId: string, xPos: number, yPos: number, health: number) {
