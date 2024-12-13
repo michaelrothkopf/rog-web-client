@@ -1,7 +1,7 @@
 import { User } from "../../../core/auth";
 import { Color } from "../core/Color";
-import { GameEngine } from "../core/GameEngine";
 import { GameObject } from "../core/GameObject";
+import { LiveEngine } from "../core/LiveEngine";
 
 export const MAP_W = 500;
 export const MAP_H = 500;
@@ -95,7 +95,7 @@ class Player extends GameObject {
   }
 }
 
-export class DuelEngine extends GameEngine {
+export class DuelEngine extends LiveEngine {
   roundStage: RoundStage = RoundStage.BATTLE;
   players: Player[] = [new Player('john', 'abcdefghijklmnop', 50, 50, true)];
   winner: string = '';
@@ -151,10 +151,20 @@ export class DuelEngine extends GameEngine {
     }
   }
 
+  /**
+   * Updates the list of players in the game to match newly added players from the server
+   */
   updateGamePlayers(players: User[]) {
-    
+    for (const p of players) {
+      if (!this.players.find(player => player.userId === p._id)) {
+        this.players.push(new Player(p.username, p._id, 0, 0, p._id === this.playerId));
+      }
+    }
   }
 
+  /**
+   * Updates a player's state based on a server message
+   */
   updatePlayerState(userId: string, xPos: number, yPos: number, health: number) {
     const p = this.players.find(p => p.userId === userId);
     if (!p) return;

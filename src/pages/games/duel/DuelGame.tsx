@@ -1,14 +1,17 @@
 import { useEffect, useRef } from 'react';
 import { globalState } from '../../../core/global';
 import { gameStateHooks, useGameStore } from '../../../hooks/gameStore';
+import { useAuthStore } from '../../../hooks/authStore';
 
 import './DuelGame.css';
 import WaitScreen from '../WaitScreen';
+
 import { DuelEngine, MAP_H, MAP_W, RoundStage } from './DuelEngine';
 import { User } from '../../../core/auth';
 
 function DuelGame(props: { devBypass?: boolean }) {
   const hasStarted = useGameStore((state) => state.hasStarted);
+  const playerId = useAuthStore((state) => state.user._id);
 
   const canvas = useRef<HTMLCanvasElement | null>(null);
   const ctx = useRef<CanvasRenderingContext2D | null>(null);
@@ -30,9 +33,9 @@ function DuelGame(props: { devBypass?: boolean }) {
       return;
     }
 
-    if (engine.current === null) {
+    if (engine.current === null && globalState.socket) {
       // Create a game engine
-      engine.current = new DuelEngine(ctx.current);
+      engine.current = new DuelEngine(ctx.current, playerId, globalState.socket);
 
       setInterval(() => {
         if (engine.current) engine.current.render();
@@ -41,7 +44,7 @@ function DuelGame(props: { devBypass?: boolean }) {
 
     // Set the game players update hook
     gameStateHooks.onGamePlayers = (players: User[]) => {
-
+      if (engine.current) engine.current.updateGamePlayers(players);
     }
   }, [hasStarted]);
 
@@ -49,10 +52,11 @@ function DuelGame(props: { devBypass?: boolean }) {
   useEffect(() => {
     return () => {
       if (globalState.socket) {
-        globalState.socket.removeAllListeners('hilarQuestions');
-        globalState.socket.removeAllListeners('hilarVoteQuestion');
-        globalState.socket.removeAllListeners('hilarVoteResult');
-        globalState.socket.removeAllListeners('hilarLeaderboard');
+        globalState.socket.removeAllListeners('duelMenu');
+        globalState.socket.removeAllListeners('duelBegin');
+        globalState.socket.removeAllListeners('duelResult');
+        globalState.socket.removeAllListeners('duelReadyState');
+        globalState.socket.removeAllListeners('duelPlayerState');
       }
     };
   }, []);
