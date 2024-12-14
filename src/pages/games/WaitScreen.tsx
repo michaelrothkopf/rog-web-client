@@ -21,8 +21,6 @@ function WaitScreen() {
     );
   }
 
-  console.log('RENDER', players, players.length);
-
   return (
     <div className='wait-screen'>
       <div className='ws-content'>

@@ -125,6 +125,9 @@ function App() {
           case 'HILAR':
             navigate(CurrentPage.HILAR);
             break;
+          case 'DUEL':
+            navigate(CurrentPage.DUEL);
+            break;
           default:
             break;
         }

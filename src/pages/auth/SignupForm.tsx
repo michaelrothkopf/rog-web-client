@@ -42,7 +42,7 @@ function SignupForm() {
   };
 
   return (
-    <form method='post' onSubmit={handleSignup} className='signup-form'>
+    <form method='post' onSubmit={handleSignup} className='login-form'>
       <input type='email' name='email' id='email' placeholder='Email' />
       <input type='text' name='username' id='username' placeholder='Username' />
       <input

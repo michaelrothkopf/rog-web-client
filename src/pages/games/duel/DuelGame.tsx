@@ -35,11 +35,11 @@ function DuelGame(props: { devBypass?: boolean }) {
 
     if (engine.current === null && globalState.socket) {
       // Create a game engine
-      engine.current = new DuelEngine(ctx.current, playerId, globalState.socket);
+      engine.current = new DuelEngine(canvas.current, ctx.current, playerId, globalState.socket);
 
-      setInterval(() => {
-        if (engine.current) engine.current.render();
-      }, 10);
+      // setInterval(() => {
+      //   if (engine.current) engine.current.render();
+      // }, 10);
     }
 
     // Set the game players update hook
@@ -69,12 +69,18 @@ function DuelGame(props: { devBypass?: boolean }) {
   // Game state listeners
   if (!globalState.socket.hasListeners('duelMenu')) {
     globalState.socket.on('duelMenu', () => {
-      if (engine.current) engine.current.roundStage = RoundStage.MENU;
+      if (engine.current) {
+        engine.current.roundStage = RoundStage.MENU;
+        engine.current.render();
+      }
     });
   }
   if (!globalState.socket.hasListeners('duelBegin')) {
     globalState.socket.on('duelBegin', () => {
-      if (engine.current) engine.current.roundStage = RoundStage.BATTLE;
+      if (engine.current) {
+        engine.current.roundStage = RoundStage.BATTLE;
+        engine.current.render();
+      }
     });
   }
   if (!globalState.socket.hasListeners('duelResult')) {
@@ -83,6 +89,7 @@ function DuelGame(props: { devBypass?: boolean }) {
       if (engine.current) {
         engine.current.winner = data.winner;
         engine.current.roundStage = RoundStage.RESULTS;
+        engine.current.render();
       }
     });
   }
@@ -97,9 +104,9 @@ function DuelGame(props: { devBypass?: boolean }) {
   // Position update listener
   if (!globalState.socket.hasListeners('duelPlayerState')) {
     globalState.socket.on('duelPlayerState', (data) => {
-      if (!data.userId || !data.xPos || !data.yPos || !data.health) return;
+      if (!data.userId || !data.xPos || !data.yPos || !data.health || !data.aimAngle) return;
       if (!engine.current) return;
-      engine.current.updatePlayerState(data.userId, data.xPos, data.yPos, data.health);
+      engine.current.updatePlayerState(data.userId, data.xPos, data.yPos, data.health, data.aimAngle);
     });
   }
 

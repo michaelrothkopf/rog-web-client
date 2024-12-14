@@ -9,7 +9,7 @@ export interface GameMetadata {
 
 export const AVAILABLE_GAMES: GameMetadata[] = [
   { gameId: 'HILAR', friendlyName: 'Hilar', minPlayers: 2, maxPlayers: 8 },
-  { gameId: 'DEV', friendlyName: 'DO NOT USE', minPlayers: 1, maxPlayers: 10 },
+  { gameId: 'DUEL', friendlyName: 'Duel', minPlayers: 2, maxPlayers: 2 },
 ];
 
 export const createGame = (gameId: string) => {

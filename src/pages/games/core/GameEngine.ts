@@ -1,11 +1,14 @@
 export abstract class GameEngine {
+  canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
 
   /**
    * Creates a new GameEngine
+   * @param canvas The canvas to render onto
    * @param ctx The rendering context of the canvas
    */
-  constructor(ctx: CanvasRenderingContext2D) {
+  constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
+    this.canvas = canvas;
     this.ctx = ctx;
   }
 
@@ -18,5 +21,18 @@ export abstract class GameEngine {
    */
   render() {
     this.draw();
+  }
+
+  /**
+   * Converts event coordinates in screen space to canvas coordinates
+   * @param x clientX from the event
+   * @param y clientY from the event
+   * @returns New set of coordinates relative to the canvas
+   */
+  convertMouseCoordinates(x: number, y: number) {
+    return {
+      x: x - this.canvas.getBoundingClientRect().left,
+      y: y - this.canvas.getBoundingClientRect().top,
+    }
   }
 }

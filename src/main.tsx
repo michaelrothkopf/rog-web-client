@@ -6,7 +6,7 @@ import TestApp from './TestApp.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    {/* <App /> */}
-    <TestApp />
+    <App />
+    {/* <TestApp /> */}
   </StrictMode>
 );

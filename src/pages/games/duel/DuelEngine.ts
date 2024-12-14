@@ -1,13 +1,16 @@
+import { Socket } from "socket.io-client";
 import { User } from "../../../core/auth";
-import { Color } from "../core/Color";
-import { GameObject } from "../core/GameObject";
 import { LiveEngine } from "../core/LiveEngine";
+import { Player } from "./DuelPlayer";
+import { Color } from "../core/Color";
 
 export const MAP_W = 500;
 export const MAP_H = 500;
 export const MOVE_DELAY = 10;
 
-const BACKGROUND_COLOR = '#FAFAFA';
+const BACKGROUND_COLOR = Color.fromHex('#FAFAFA');
+const UI_FONT = '20px sans-serif';
+const UI_TEXT_COLOR = Color.fromHex('#333333');
 
 export enum RoundStage {
   MENU,
@@ -15,90 +18,71 @@ export enum RoundStage {
   RESULTS,
 }
 
-const PLAYER_COLOR = Color.fromHex('#086621');
-const ENEMY_COLOR = Color.fromHex('#850505');
-const PLAYER_RADIUS = 10;
-const PLAYER_WIDTH = PLAYER_RADIUS * 2;
-
-const PLAYER_UI_FONT = '16px sans-serif';
-
-const USERNAME_OFFSET_Y = 15;
-const USERNAME_COLOR = Color.fromHex('#888888');
-
-const HIGH_HEALTH_COLOR = Color.fromHex('#00aa00');
-const MID_HEALTH_COLOR = Color.fromHex('#c97600');
-const LOW_HEALTH_COLOR = Color.fromHex('#aa0000');
-const HEALTH_BACKGROUND_COLOR = Color.fromHex('#cccccc');
-const HEALTHBAR_OFFSET_Y = 10;
-const HEALTHBAR_HEIGHT = 5;
-const HEALTHBAR_MAX_WIDTH = PLAYER_WIDTH * 1.25;
-
-const STARTING_HEALTH = 100;
-
-class Player extends GameObject {
-  username: string;
-  userId: string;
-  isControlled: boolean;
-  health: number = 100;
-  ready: boolean = false;
-
-  constructor(username: string, userId: string, x: number, y: number, isControlled: boolean = false) {
-    super(x, y, null, PLAYER_WIDTH, PLAYER_WIDTH);
-
-    this.username = username;
-    this.userId = userId;
-    this.isControlled = isControlled;
-    this.drawColor = isControlled ? PLAYER_COLOR : ENEMY_COLOR;
-  }
-
-  render(ctx: CanvasRenderingContext2D): void {
-    console.log('render')
-    // Draw the actual box
-    this.draw(ctx);
-
-    // Draw the UI
-    this.drawUi(ctx);
-  }
-
-  draw(ctx: CanvasRenderingContext2D): void {
-    ctx.beginPath();
-    ctx.arc(this.xPos, this.yPos, PLAYER_RADIUS, 0, 2 * Math.PI);
-    ctx.fillStyle = this.drawColor.toRgbString();
-    ctx.fill();
-  }
-
-  drawUi(ctx: CanvasRenderingContext2D): void {
-    // Set the font for player UI
-    ctx.font = PLAYER_UI_FONT;
-    ctx.textAlign = 'center';
-
-    ctx.fillStyle = USERNAME_COLOR.toRgbString();
-    // Draw the player's username
-    ctx.fillText(this.username, this.xPos + this.width / 2, this.yPos - USERNAME_OFFSET_Y);
-
-    // Set the color based on health
-    if (this.health > (STARTING_HEALTH * (2/3))) {
-      ctx.fillStyle = HIGH_HEALTH_COLOR.toRgbString();
-    }
-    else if (this.health > (STARTING_HEALTH * (1/3))) {
-      ctx.fillStyle = MID_HEALTH_COLOR.toRgbString();
-    }
-    else {
-      ctx.fillStyle = LOW_HEALTH_COLOR.toRgbString();
-    }
-    // Draw the healthbar
-    const hWidth = this.health / STARTING_HEALTH * HEALTHBAR_MAX_WIDTH;
-    ctx.fillRect(this.xPos - (HEALTHBAR_MAX_WIDTH - PLAYER_WIDTH) / 2, this.yPos - HEALTHBAR_OFFSET_Y, hWidth, HEALTHBAR_HEIGHT);
-    // Draw the healthbar background
-    ctx.fillStyle = HEALTH_BACKGROUND_COLOR.toRgbString();
-    ctx.fillRect(this.xPos - (HEALTHBAR_MAX_WIDTH - PLAYER_WIDTH) / 2 + hWidth, this.yPos - HEALTHBAR_OFFSET_Y, HEALTHBAR_MAX_WIDTH - hWidth, HEALTHBAR_HEIGHT);
-  }
-}
-
 export class DuelEngine extends LiveEngine {
   roundStage: RoundStage = RoundStage.BATTLE;
   players: Player[] = [new Player('john', 'abcdefghijklmnop', 50, 50, true)];
   winner: string = '';
+
+  constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, playerId: string, socket: Socket) {
+    super(canvas, ctx, playerId, socket);
+    this.initialize();
+    console.log('PID:', this.playerId);
+  }
+
+  initialize() {
+    window.addEventListener('keydown', (e) => {
+      // Movement cases
+      if (e.code === 'KeyW') {
+        this.socket.send('duelMove', {
+          direction: 'up',
+        });
+      }
+      if (e.code === 'KeyA') {
+        this.socket.send('duelMove', {
+          direction: 'left',
+        });
+      }
+      if (e.code === 'KeyS') {
+        this.socket.send('duelMove', {
+          direction: 'down',
+        });
+      }
+      if (e.code === 'KeyD') {
+        this.socket.send('duelMove', {
+          direction: 'right',
+        });
+      }
+    });
+
+    this.canvas.addEventListener('click', (e) => {
+      // The position of the click
+      const pos = this.convertMouseCoordinates(e.clientX, e.clientY);
+
+      const player = this.getControlledPlayer();
+      if (!player) return;
+
+      const direction = Math.atan2(pos.y - player.yPos, pos.x - player.xPos);
+
+      // Send an angle update
+      this.socket.send('duelAim', { direction });
+
+      // Send the shot
+      this.socket.send('duelShoot', { direction });
+    });
+
+    this.canvas.addEventListener('mousemove', (e) => {
+      // The position of the click
+      const pos = this.convertMouseCoordinates(e.clientX, e.clientY);
+
+      const player = this.getControlledPlayer();
+      if (!player) return;
+
+      const direction = Math.atan2(pos.y - player.yPos, pos.x - player.xPos);
+
+      // Send an angle update
+      this.socket.send('duelAim', { direction });
+    })
+  }
 
   /**
    * Redraw all elements to the screen
@@ -121,12 +105,21 @@ export class DuelEngine extends LiveEngine {
   }
 
   drawBackground() {
-    this.ctx.fillStyle = BACKGROUND_COLOR;
+    this.ctx.fillStyle = BACKGROUND_COLOR.toRgbString();
     this.ctx.fillRect(0, 0, MAP_H, MAP_W);
   }
 
   drawMenu() {
+    console.log('drawing menu')
+    this.ctx.font = UI_FONT;
+    this.ctx.textAlign = 'center';
+    this.ctx.fillStyle = UI_TEXT_COLOR.toRgbString();
     
+    // Get the controlled player
+    const p = this.getControlledPlayer();
+    if (!p) return;
+    this.ctx.fillText(`You are ${p.ready ? 'not ready' : 'ready'}.`, 0, 0);
+    this.ctx.fillText(`Press space to ready up.`, 0, 0);
   }
 
   drawBattle() {
@@ -165,11 +158,19 @@ export class DuelEngine extends LiveEngine {
   /**
    * Updates a player's state based on a server message
    */
-  updatePlayerState(userId: string, xPos: number, yPos: number, health: number) {
+  updatePlayerState(userId: string, xPos: number, yPos: number, health: number, aimAngle: number) {
     const p = this.players.find(p => p.userId === userId);
     if (!p) return;
     p.xPos = xPos;
     p.yPos = yPos;
     p.health = health;
+    p.aimAngle = aimAngle;
+  }
+
+  getControlledPlayer() {
+    for (const p of this.players) {
+      if (p.userId === this.playerId) return p;
+    }
+    return null;
   }
 }

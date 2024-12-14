@@ -23,17 +23,18 @@ function FriendRequestBox() {
         getFriendRequestsList().then((newFriendRequests) =>
           setFriendRequests(newFriendRequests)
         );
-        getFriendList().then((newFriends) => setFriends(newFriends));
       }
     });
   };
 
   const handleAcceptRequest = (request: string) => {
     acceptFriendRequest(request).then((success) => {
-      if (success)
+      if (success) {
         getFriendRequestsList().then((newFriendRequests) =>
           setFriendRequests(newFriendRequests)
         );
+        getFriendList().then((newFriends) => setFriends(newFriends));
+      }
     });
   };
 
