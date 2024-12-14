@@ -1,17 +1,17 @@
 import { useEffect, useRef } from 'react';
 import { globalState } from '../../../core/global';
-import { gameStateHooks, useGameStore } from '../../../hooks/gameStore';
+import { useGameStore } from '../../../hooks/gameStore';
 import { useAuthStore } from '../../../hooks/authStore';
 
 import './DuelGame.css';
 import WaitScreen from '../WaitScreen';
 
 import { DuelEngine, MAP_H, MAP_W, RoundStage } from './DuelEngine';
-import { User } from '../../../core/auth';
 
 function DuelGame(props: { devBypass?: boolean }) {
   const hasStarted = useGameStore((state) => state.hasStarted);
   const playerId = useAuthStore((state) => state.user._id);
+  const gamePlayers = useGameStore((state) => state.players);
 
   const canvas = useRef<HTMLCanvasElement | null>(null);
   const ctx = useRef<CanvasRenderingContext2D | null>(null);
@@ -35,16 +35,11 @@ function DuelGame(props: { devBypass?: boolean }) {
 
     if (engine.current === null && globalState.socket) {
       // Create a game engine
-      engine.current = new DuelEngine(canvas.current, ctx.current, playerId, globalState.socket);
+      engine.current = new DuelEngine(ctx.current, playerId, globalState.socket, gamePlayers);
 
       // setInterval(() => {
       //   if (engine.current) engine.current.render();
       // }, 10);
-    }
-
-    // Set the game players update hook
-    gameStateHooks.onGamePlayers = (players: User[]) => {
-      if (engine.current) engine.current.updateGamePlayers(players);
     }
   }, [hasStarted]);
 

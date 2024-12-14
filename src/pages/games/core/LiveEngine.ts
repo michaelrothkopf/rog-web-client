@@ -5,8 +5,8 @@ export class LiveEngine extends GameEngine {
   playerId: string;
   socket: Socket;
 
-  constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, playerId: string, socket: Socket) {
-    super(canvas, ctx);
+  constructor(ctx: CanvasRenderingContext2D, playerId: string, socket: Socket) {
+    super(ctx);
     this.playerId = playerId;
     this.socket = socket;
   }

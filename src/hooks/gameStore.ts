@@ -1,19 +1,23 @@
 import { create } from 'zustand';
-import { User } from '../core/auth';
+
+export interface GamePlayer {
+  userId: string;
+  displayName: string;
+}
 
 export const gameStateHooks = {
-  onGamePlayers: (players: User[]) => { players; },
+  onGamePlayers: (players: GamePlayer[]) => { players; },
 };
 
 export interface GameState {
   gameId: string;
   joinCode: string;
-  players: User[];
+  players: GamePlayer[];
   hasStarted: boolean;
   isHost: boolean;
 
-  setGame(newGameId: string, newJoinCode: string, newPlayers: User[], isHost?: boolean): void;
-  setPlayers(newPlayers: User[]): void;
+  setGame(newGameId: string, newJoinCode: string, newPlayers: GamePlayer[], isHost?: boolean): void;
+  setPlayers(newPlayers: GamePlayer[]): void;
   beginGame(): void;
 }
 
@@ -25,14 +29,14 @@ export const useGameStore = create<GameState>((set) => ({
   hasStarted: false,
   isHost: false,
 
-  setGame: (newGameId: string, newJoinCode: string, newPlayers: User[], isHost?: boolean) => set({
+  setGame: (newGameId: string, newJoinCode: string, newPlayers: GamePlayer[], isHost?: boolean) => set({
     gameId: newGameId,
     joinCode: newJoinCode,
     players: newPlayers,
     hasStarted: false,
     isHost: isHost || false,
   }),
-  setPlayers: (newPlayers: User[]) => set({
+  setPlayers: (newPlayers: GamePlayer[]) => set({
     players: newPlayers,
   }),
   beginGame: () => set({

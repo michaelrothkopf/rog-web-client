@@ -1,8 +1,8 @@
 import { Socket } from "socket.io-client";
-import { User } from "../../../core/auth";
 import { LiveEngine } from "../core/LiveEngine";
 import { Player } from "./DuelPlayer";
 import { Color } from "../core/Color";
+import { GamePlayer } from "../../../hooks/gameStore";
 
 export const MAP_W = 500;
 export const MAP_H = 500;
@@ -20,13 +20,13 @@ export enum RoundStage {
 
 export class DuelEngine extends LiveEngine {
   roundStage: RoundStage = RoundStage.BATTLE;
-  players: Player[] = [new Player('john', 'abcdefghijklmnop', 50, 50, true)];
+  players: Player[] = [];
   winner: string = '';
 
-  constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, playerId: string, socket: Socket) {
-    super(canvas, ctx, playerId, socket);
+  constructor(ctx: CanvasRenderingContext2D, playerId: string, socket: Socket, players: GamePlayer[]) {
+    super(ctx, playerId, socket);
     this.initialize();
-    console.log('PID:', this.playerId);
+    this.updateGamePlayers(players);
   }
 
   initialize() {
@@ -52,9 +52,14 @@ export class DuelEngine extends LiveEngine {
           direction: 'right',
         });
       }
+
+      // Ready up
+      if (e.code === 'Space') {
+        this.socket.send('duelReady');
+      }
     });
 
-    this.canvas.addEventListener('click', (e) => {
+    this.ctx.canvas.addEventListener('click', (e) => {
       // The position of the click
       const pos = this.convertMouseCoordinates(e.clientX, e.clientY);
 
@@ -70,7 +75,10 @@ export class DuelEngine extends LiveEngine {
       this.socket.send('duelShoot', { direction });
     });
 
-    this.canvas.addEventListener('mousemove', (e) => {
+    this.ctx.canvas.addEventListener('mousemove', (e) => {
+      // Don't send aim updates on the menu screen
+      if (this.roundStage !== RoundStage.BATTLE) return;
+
       // The position of the click
       const pos = this.convertMouseCoordinates(e.clientX, e.clientY);
 
@@ -118,8 +126,12 @@ export class DuelEngine extends LiveEngine {
     // Get the controlled player
     const p = this.getControlledPlayer();
     if (!p) return;
-    this.ctx.fillText(`You are ${p.ready ? 'not ready' : 'ready'}.`, 0, 0);
-    this.ctx.fillText(`Press space to ready up.`, 0, 0);
+    if (p.ready) {
+      this.ctx.fillText(`You are ready.`, MAP_W / 2, MAP_H / 2);
+    } else {
+      this.ctx.fillText(`You are not ready.`, MAP_W / 2, MAP_H / 2 - 10);
+      this.ctx.fillText(`Press space to ready up.`, MAP_W / 2, MAP_H / 2 + 10);
+    }
   }
 
   drawBattle() {
@@ -142,15 +154,18 @@ export class DuelEngine extends LiveEngine {
       if (!p) continue;
       p.ready = rs.ready;
     }
+    this.render();
   }
 
   /**
    * Updates the list of players in the game to match newly added players from the server
    */
-  updateGamePlayers(players: User[]) {
+  updateGamePlayers(players: GamePlayer[]) {
     for (const p of players) {
-      if (!this.players.find(player => player.userId === p._id)) {
-        this.players.push(new Player(p.username, p._id, 0, 0, p._id === this.playerId));
+      console.log('Updating players with player', p, p.userId, p.displayName);
+      if (!this.players.find(player => player.userId === p.userId)) {
+        console.log('did not find, inserting');
+        this.players.push(new Player(p.displayName, p.userId, 0, 0, p.userId === this.playerId));
       }
     }
   }
@@ -165,6 +180,7 @@ export class DuelEngine extends LiveEngine {
     p.yPos = yPos;
     p.health = health;
     p.aimAngle = aimAngle;
+    this.render();
   }
 
   getControlledPlayer() {
