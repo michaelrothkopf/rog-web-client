@@ -80,7 +80,7 @@ function DuelGame(props: { devBypass?: boolean }) {
   }
   if (!globalState.socket.hasListeners('duelResult')) {
     globalState.socket.on('duelResult', (data) => {
-      if (!data.winner) return;
+      if (!('winner' in data)) return;
       if (engine.current) {
         engine.current.winner = data.winner;
         engine.current.roundStage = RoundStage.RESULTS;
@@ -91,15 +91,15 @@ function DuelGame(props: { devBypass?: boolean }) {
   // Ready up listener
   if (!globalState.socket.hasListeners('duelReadyState')) {
     globalState.socket.on('duelReadyState', (data) => {
-      if (!data.readyData || !data.allReady) return;
+      if (!('readyState' in data) || !('allReady' in data)) return;
       if (!engine.current) return;
-      engine.current.updateReady(data.readyData);
+      engine.current.updateReady(data.readyState);
     });
   }
   // Position update listener
   if (!globalState.socket.hasListeners('duelPlayerState')) {
     globalState.socket.on('duelPlayerState', (data) => {
-      if (!data.userId || !data.xPos || !data.yPos || !data.health || !data.aimAngle) return;
+      if (!('userId' in data) || !('xPos' in data) || !('yPos' in data) || !('health' in data) || !('aimAngle' in data)) return;
       if (!engine.current) return;
       engine.current.updatePlayerState(data.userId, data.xPos, data.yPos, data.health, data.aimAngle);
     });

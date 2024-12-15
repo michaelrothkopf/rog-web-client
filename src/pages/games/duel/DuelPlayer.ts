@@ -6,8 +6,8 @@ const ENEMY_COLOR = Color.fromHex('#850505');
 const PLAYER_RADIUS = 10;
 const PLAYER_WIDTH = PLAYER_RADIUS * 2;
 const GUN_COLOR = Color.fromHex('#444444');
-const GUN_WIDTH = 2;
-const GUN_LENGTH = 3;
+const GUN_WIDTH = 4;
+const GUN_LENGTH = 8;
 
 const PLAYER_UI_FONT = '16px sans-serif';
 
@@ -56,23 +56,23 @@ export class Player extends GameObject {
     ctx.fillStyle = GUN_COLOR.toRgbString();
     // Far left corner
     ctx.moveTo(
-      PLAYER_RADIUS * Math.cos(this.aimAngle) - GUN_WIDTH * 0.5 * Math.sin(this.aimAngle) + GUN_LENGTH * Math.cos(this.aimAngle),
-      PLAYER_RADIUS * Math.sin(this.aimAngle) + GUN_WIDTH * 0.5 * Math.cos(this.aimAngle) + GUN_LENGTH * Math.sin(this.aimAngle),
+      this.xPos + PLAYER_RADIUS * Math.cos(this.aimAngle) - GUN_WIDTH * 0.5 * Math.sin(this.aimAngle) + GUN_LENGTH * Math.cos(this.aimAngle),
+      this.yPos + PLAYER_RADIUS * Math.sin(this.aimAngle) + GUN_WIDTH * 0.5 * Math.cos(this.aimAngle) + GUN_LENGTH * Math.sin(this.aimAngle),
     );
     // Far right corner
     ctx.lineTo(
-      PLAYER_RADIUS * Math.cos(this.aimAngle) + GUN_WIDTH * 0.5 * Math.sin(this.aimAngle) + GUN_LENGTH * Math.cos(this.aimAngle),
-      PLAYER_RADIUS * Math.sin(this.aimAngle) - GUN_WIDTH * 0.5 * Math.cos(this.aimAngle) + GUN_LENGTH * Math.sin(this.aimAngle),
+      this.xPos + PLAYER_RADIUS * Math.cos(this.aimAngle) + GUN_WIDTH * 0.5 * Math.sin(this.aimAngle) + GUN_LENGTH * Math.cos(this.aimAngle),
+      this.yPos + PLAYER_RADIUS * Math.sin(this.aimAngle) - GUN_WIDTH * 0.5 * Math.cos(this.aimAngle) + GUN_LENGTH * Math.sin(this.aimAngle),
     );
     // Close right corner
     ctx.lineTo(
-      PLAYER_RADIUS * Math.cos(this.aimAngle) + GUN_WIDTH * 0.5 * Math.sin(this.aimAngle),
-      PLAYER_RADIUS * Math.sin(this.aimAngle) - GUN_WIDTH * 0.5 * Math.cos(this.aimAngle),
+      this.xPos + PLAYER_RADIUS * Math.cos(this.aimAngle) + GUN_WIDTH * 0.5 * Math.sin(this.aimAngle),
+      this.yPos + PLAYER_RADIUS * Math.sin(this.aimAngle) - GUN_WIDTH * 0.5 * Math.cos(this.aimAngle),
     );
     // Close left corner
     ctx.lineTo(
-      PLAYER_RADIUS * Math.cos(this.aimAngle) - GUN_WIDTH * 0.5 * Math.sin(this.aimAngle),
-      PLAYER_RADIUS * Math.sin(this.aimAngle) + GUN_WIDTH * 0.5 * Math.cos(this.aimAngle),
+      this.xPos + PLAYER_RADIUS * Math.cos(this.aimAngle) - GUN_WIDTH * 0.5 * Math.sin(this.aimAngle),
+      this.yPos + PLAYER_RADIUS * Math.sin(this.aimAngle) + GUN_WIDTH * 0.5 * Math.cos(this.aimAngle),
     );
     ctx.closePath();
     ctx.fill();
@@ -90,7 +90,7 @@ export class Player extends GameObject {
     ctx.textAlign = 'center';
     ctx.fillStyle = USERNAME_COLOR.toRgbString();
     // Draw the player's username
-    ctx.fillText(this.username, this.xPos + this.width / 2, this.yPos - USERNAME_OFFSET_Y);
+    ctx.fillText(this.username, this.xPos, this.yPos - USERNAME_OFFSET_Y);
 
     // Set the color based on health
     if (this.health > (STARTING_HEALTH * (2/3))) {
@@ -104,9 +104,9 @@ export class Player extends GameObject {
     }
     // Draw the healthbar
     const hWidth = this.health / STARTING_HEALTH * HEALTHBAR_MAX_WIDTH;
-    ctx.fillRect(this.xPos - (HEALTHBAR_MAX_WIDTH - PLAYER_WIDTH) / 2, this.yPos - HEALTHBAR_OFFSET_Y, hWidth, HEALTHBAR_HEIGHT);
+    ctx.fillRect(this.xPos - HEALTHBAR_MAX_WIDTH / 2, this.yPos - HEALTHBAR_OFFSET_Y, hWidth, HEALTHBAR_HEIGHT);
     // Draw the healthbar background
     ctx.fillStyle = HEALTH_BACKGROUND_COLOR.toRgbString();
-    ctx.fillRect(this.xPos - (HEALTHBAR_MAX_WIDTH - PLAYER_WIDTH) / 2 + hWidth, this.yPos - HEALTHBAR_OFFSET_Y, HEALTHBAR_MAX_WIDTH - hWidth, HEALTHBAR_HEIGHT);
+    ctx.fillRect(this.xPos - HEALTHBAR_MAX_WIDTH / 2 + hWidth, this.yPos - HEALTHBAR_OFFSET_Y, HEALTHBAR_MAX_WIDTH - hWidth, HEALTHBAR_HEIGHT);
   }
 }

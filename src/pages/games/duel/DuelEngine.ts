@@ -33,29 +33,29 @@ export class DuelEngine extends LiveEngine {
     window.addEventListener('keydown', (e) => {
       // Movement cases
       if (e.code === 'KeyW') {
-        this.socket.send('duelMove', {
+        this.socket.emit('duelMove', {
           direction: 'up',
         });
       }
       if (e.code === 'KeyA') {
-        this.socket.send('duelMove', {
+        this.socket.emit('duelMove', {
           direction: 'left',
         });
       }
       if (e.code === 'KeyS') {
-        this.socket.send('duelMove', {
+        this.socket.emit('duelMove', {
           direction: 'down',
         });
       }
       if (e.code === 'KeyD') {
-        this.socket.send('duelMove', {
+        this.socket.emit('duelMove', {
           direction: 'right',
         });
       }
 
       // Ready up
       if (e.code === 'Space') {
-        this.socket.send('duelReady');
+        this.socket.emit('duelReady');
       }
     });
 
@@ -69,10 +69,10 @@ export class DuelEngine extends LiveEngine {
       const direction = Math.atan2(pos.y - player.yPos, pos.x - player.xPos);
 
       // Send an angle update
-      this.socket.send('duelAim', { direction });
+      this.socket.emit('duelAim', { direction });
 
       // Send the shot
-      this.socket.send('duelShoot', { direction });
+      this.socket.emit('duelShoot', { direction });
     });
 
     this.ctx.canvas.addEventListener('mousemove', (e) => {
@@ -88,7 +88,7 @@ export class DuelEngine extends LiveEngine {
       const direction = Math.atan2(pos.y - player.yPos, pos.x - player.xPos);
 
       // Send an angle update
-      this.socket.send('duelAim', { direction });
+      this.socket.emit('duelAim', { direction });
     })
   }
 
@@ -162,9 +162,7 @@ export class DuelEngine extends LiveEngine {
    */
   updateGamePlayers(players: GamePlayer[]) {
     for (const p of players) {
-      console.log('Updating players with player', p, p.userId, p.displayName);
       if (!this.players.find(player => player.userId === p.userId)) {
-        console.log('did not find, inserting');
         this.players.push(new Player(p.displayName, p.userId, 0, 0, p.userId === this.playerId));
       }
     }
@@ -175,9 +173,10 @@ export class DuelEngine extends LiveEngine {
    */
   updatePlayerState(userId: string, xPos: number, yPos: number, health: number, aimAngle: number) {
     const p = this.players.find(p => p.userId === userId);
+    // console.log(`UPS: ${p}, ${userId}, ${xPos}, ${yPos}, ${health}, ${aimAngle} rad`);
     if (!p) return;
     p.xPos = xPos;
-    p.yPos = yPos;
+    p.yPos = MAP_H - yPos;
     p.health = health;
     p.aimAngle = aimAngle;
     this.render();
