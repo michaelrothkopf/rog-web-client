@@ -3,6 +3,7 @@ import { LiveEngine } from "../core/LiveEngine";
 import { Player } from "./DuelPlayer";
 import { Color } from "../core/Color";
 import { GamePlayer } from "../../../hooks/gameStore";
+import { globalKeyStateManager } from "../core/KeyStateManager";
 
 export const MAP_W = 500;
 export const MAP_H = 500;
@@ -11,6 +12,8 @@ export const MOVE_DELAY = 10;
 const BACKGROUND_COLOR = Color.fromHex('#FAFAFA');
 const UI_FONT = '20px sans-serif';
 const UI_TEXT_COLOR = Color.fromHex('#333333');
+
+const INPUT_CHECK_INTERVAL = 20; // ms
 
 export enum RoundStage {
   MENU,
@@ -22,37 +25,20 @@ export class DuelEngine extends LiveEngine {
   roundStage: RoundStage = RoundStage.BATTLE;
   players: Player[] = [];
   winner: string = '';
+  inputCheckInterval: number = 0;
 
   constructor(ctx: CanvasRenderingContext2D, playerId: string, socket: Socket, players: GamePlayer[]) {
     super(ctx, playerId, socket);
     this.initialize();
     this.updateGamePlayers(players);
+
+    this.inputCheckInterval = setInterval(() => {
+      this.checkMovement();
+    }, INPUT_CHECK_INTERVAL);
   }
 
   initialize() {
     window.addEventListener('keydown', (e) => {
-      // Movement cases
-      if (e.code === 'KeyW') {
-        this.socket.emit('duelMove', {
-          direction: 'up',
-        });
-      }
-      if (e.code === 'KeyA') {
-        this.socket.emit('duelMove', {
-          direction: 'left',
-        });
-      }
-      if (e.code === 'KeyS') {
-        this.socket.emit('duelMove', {
-          direction: 'down',
-        });
-      }
-      if (e.code === 'KeyD') {
-        this.socket.emit('duelMove', {
-          direction: 'right',
-        });
-      }
-
       // Ready up
       if (e.code === 'Space') {
         this.socket.emit('duelReady');
@@ -90,6 +76,22 @@ export class DuelEngine extends LiveEngine {
       // Send an angle update
       this.socket.emit('duelAim', { direction });
     })
+  }
+
+  checkMovement() {
+    // All directions the player is trying to move in
+    const directions: string[] = [];
+
+    // Check each direction individually
+    if (globalKeyStateManager.codeDown('KeyW')) directions.push('up');
+    if (globalKeyStateManager.codeDown('KeyA')) directions.push('left');
+    if (globalKeyStateManager.codeDown('KeyS')) directions.push('down');
+    if (globalKeyStateManager.codeDown('KeyD')) directions.push('right');
+
+    // If the player is to move
+    if (directions.length > 0) {
+      this.socket.emit('duelMove', { directions });
+    }
   }
 
   /**
@@ -187,5 +189,9 @@ export class DuelEngine extends LiveEngine {
       if (p.userId === this.playerId) return p;
     }
     return null;
+  }
+
+  cleanup() {
+    clearInterval(this.inputCheckInterval);
   }
 }

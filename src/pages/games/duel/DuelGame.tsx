@@ -53,6 +53,10 @@ function DuelGame(props: { devBypass?: boolean }) {
         globalState.socket.removeAllListeners('duelReadyState');
         globalState.socket.removeAllListeners('duelPlayerState');
       }
+
+      if (engine.current) {
+        engine.current.cleanup();
+      }
     };
   }, []);
 
