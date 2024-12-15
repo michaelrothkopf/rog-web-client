@@ -5,13 +5,17 @@ import { Color } from "../core/Color";
 import { GamePlayer } from "../../../hooks/gameStore";
 import { globalKeyStateManager } from "../core/KeyStateManager";
 
-export const MAP_W = 500;
-export const MAP_H = 500;
+export const MAP_W = 750;
+export const MAP_H = 750;
 export const MOVE_DELAY = 10;
 
 const BACKGROUND_COLOR = Color.fromHex('#FAFAFA');
-const UI_FONT = '20px sans-serif';
+const UI_FONT = '20px Roboto';
 const UI_TEXT_COLOR = Color.fromHex('#333333');
+const MENU_BAR_COLOR = Color.fromHex('#EFEFEF');
+
+const READY_COLOR = Color.fromHex('#38761d');
+const NOT_READY_COLOR = Color.fromHex('#990000');
 
 const INPUT_CHECK_INTERVAL = 20; // ms
 
@@ -120,19 +124,51 @@ export class DuelEngine extends LiveEngine {
   }
 
   drawMenu() {
-    console.log('drawing menu')
-    this.ctx.font = UI_FONT;
-    this.ctx.textAlign = 'center';
-    this.ctx.fillStyle = UI_TEXT_COLOR.toRgbString();
-    
     // Get the controlled player
     const p = this.getControlledPlayer();
     if (!p) return;
-    if (p.ready) {
-      this.ctx.fillText(`You are ready.`, MAP_W / 2, MAP_H / 2);
-    } else {
-      this.ctx.fillText(`You are not ready.`, MAP_W / 2, MAP_H / 2 - 10);
-      this.ctx.fillText(`Press space to ready up.`, MAP_W / 2, MAP_H / 2 + 10);
+
+    const topBarHeight = MAP_H / 6;
+    const contentStart = topBarHeight * 2;
+    const usernameStart = MAP_W / 6;
+    const readyEnd = MAP_W - usernameStart;
+    const usernameSpacing = MAP_H / 10;
+
+    // Draw the menu bar
+    this.ctx.fillStyle = MENU_BAR_COLOR.toRgbString();
+    this.ctx.fillRect(0, 0, MAP_W, topBarHeight);
+
+    // Draw the menu bar label
+    this.ctx.font = `light 40px Roboto`;
+    this.ctx.textAlign = 'center';
+    this.ctx.textBaseline = 'middle';
+    this.ctx.fillStyle = UI_TEXT_COLOR.toRgbString();
+    this.ctx.fillText(`Lobby`, MAP_W / 2, topBarHeight / 2);
+
+    let cy = contentStart;
+    // Draw the player ready data
+    for (const player of this.players.values()) {
+      // Draw the username
+      this.ctx.font = `bold ${UI_FONT}`;
+      this.ctx.textAlign = 'left';
+      this.ctx.fillStyle = UI_TEXT_COLOR.toRgbString();
+      this.ctx.fillText(`${player.username}`, usernameStart, cy);
+
+      // Draw the ready
+      this.ctx.font = `normal ${UI_FONT}`;
+      this.ctx.textAlign = 'right';
+      this.ctx.fillStyle = player.ready ? READY_COLOR.toRgbString() : NOT_READY_COLOR.toRgbString();
+      this.ctx.fillText(player.ready ? 'READY' : 'NOT READY', readyEnd, cy);
+
+      cy += usernameSpacing;
+    }
+
+    // Draw the ready up instructions if not ready
+    if (!p.ready) {
+      this.ctx.textAlign = 'center';
+      this.ctx.font = `normal ${UI_FONT}`;
+      this.ctx.fillStyle = UI_TEXT_COLOR.toRgbString();
+      this.ctx.fillText('Press space to ready up!', MAP_W / 2, cy);
     }
   }
 
@@ -144,7 +180,24 @@ export class DuelEngine extends LiveEngine {
   }
 
   drawResults() {
+    const topBarHeight = MAP_H / 6;
+    const contentCenter = (MAP_H - topBarHeight) / 2;
 
+    // Draw the menu bar
+    this.ctx.fillStyle = MENU_BAR_COLOR.toRgbString();
+    this.ctx.fillRect(0, 0, MAP_W, topBarHeight);
+
+    // Draw the menu bar label
+    this.ctx.font = `light 40px Roboto`;
+    this.ctx.textAlign = 'center';
+    this.ctx.textBaseline = 'middle';
+    this.ctx.fillStyle = UI_TEXT_COLOR.toRgbString();
+    this.ctx.fillText(`Round Results`, MAP_W / 2, topBarHeight / 2);
+
+    this.ctx.font = `bold ${UI_FONT}`;
+    this.ctx.textAlign = 'center';
+    this.ctx.fillStyle = UI_TEXT_COLOR.toRgbString();
+    this.ctx.fillText(`${this.winner} won!`, MAP_W / 2, contentCenter);
   }
 
   /**
