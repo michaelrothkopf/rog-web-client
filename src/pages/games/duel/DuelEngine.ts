@@ -17,6 +17,8 @@ const MENU_BAR_COLOR = Color.fromHex('#EFEFEF');
 const READY_COLOR = Color.fromHex('#38761d');
 const NOT_READY_COLOR = Color.fromHex('#990000');
 
+const WALL_COLOR = Color.fromHex('#111111');
+
 const INPUT_CHECK_INTERVAL = 20; // ms
 
 export enum RoundStage {
@@ -30,6 +32,7 @@ export class DuelEngine extends LiveEngine {
   players: Player[] = [];
   winner: string = '';
   inputCheckInterval: number = 0;
+  walls: number[][][] = [];
 
   constructor(ctx: CanvasRenderingContext2D, playerId: string, socket: Socket, players: GamePlayer[]) {
     super(ctx, playerId, socket);
@@ -173,6 +176,31 @@ export class DuelEngine extends LiveEngine {
   }
 
   drawBattle() {
+    // Draw all walls in the battle
+    for (const w of this.walls) {
+      // If the wall is invalid
+      if (w.length < 3) continue;
+
+      // Draw the polygon
+      this.ctx.beginPath();
+      this.ctx.fillStyle = WALL_COLOR.toRgbString();
+
+      // Start at the first point
+      const start = w[0];
+      if (start.length < 2) continue;
+      this.ctx.moveTo(start[0], MAP_H - start[1]);
+
+      // For every other point
+      for (let i = 1; i < w.length; i++) {
+        // Line to that point
+        this.ctx.lineTo(w[i][0], MAP_H - w[i][1]);
+      }
+
+      // Fill in the polygon
+      this.ctx.closePath();
+      this.ctx.fill();
+    }
+
     // Draw all players in the battle
     for (const p of this.players) {
       p.render(this.ctx);
@@ -181,7 +209,7 @@ export class DuelEngine extends LiveEngine {
 
   drawResults() {
     const topBarHeight = MAP_H / 6;
-    const contentCenter = (MAP_H - topBarHeight) / 2;
+    const contentCenter = topBarHeight + (MAP_H - topBarHeight) / 2;
 
     // Draw the menu bar
     this.ctx.fillStyle = MENU_BAR_COLOR.toRgbString();
@@ -194,10 +222,13 @@ export class DuelEngine extends LiveEngine {
     this.ctx.fillStyle = UI_TEXT_COLOR.toRgbString();
     this.ctx.fillText(`Round Results`, MAP_W / 2, topBarHeight / 2);
 
-    this.ctx.font = `bold ${UI_FONT}`;
+    // Draw the winner label
+    const winner = this.players.find(p => p.userId === this.winner);
+    if (!winner) return;
+    this.ctx.font = `bold 60px Roboto`;
     this.ctx.textAlign = 'center';
     this.ctx.fillStyle = UI_TEXT_COLOR.toRgbString();
-    this.ctx.fillText(`${this.winner} won!`, MAP_W / 2, contentCenter);
+    this.ctx.fillText(`${winner.username} won!`, MAP_W / 2, contentCenter);
   }
 
   /**

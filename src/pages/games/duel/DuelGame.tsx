@@ -75,8 +75,10 @@ function DuelGame(props: { devBypass?: boolean }) {
     });
   }
   if (!globalState.socket.hasListeners('duelBegin')) {
-    globalState.socket.on('duelBegin', () => {
+    globalState.socket.on('duelBegin', (data) => {
+      if (!('walls' in data)) return;
       if (engine.current) {
+        engine.current.walls = data.walls;
         engine.current.roundStage = RoundStage.BATTLE;
         engine.current.render();
       }
