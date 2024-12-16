@@ -7,7 +7,7 @@ function NavBar() {
 
   return (
     <div className='nav-bar'>
-      <span className='site-title'>Nangam</span>
+      <span className='site-title'>MROG</span>
       <NavLink
         pageName='Home'
         action={() => {
