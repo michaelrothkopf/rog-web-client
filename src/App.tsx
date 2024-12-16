@@ -39,6 +39,7 @@ function App() {
   const setGame = useGameStore((state) => state.setGame);
   const setPlayers = useGameStore((state) => state.setPlayers);
   const beginGame = useGameStore((state) => state.beginGame);
+  const resetGame = useGameStore((state) => state.resetGame);
 
   useEffect(() => {
     // Set the document body background color
@@ -158,6 +159,15 @@ function App() {
       // When when the client receives a game error
       globalState.socket.on('gameError', (data) => {
         console.error(data);
+      });
+
+      // When the client's game is terminated
+      globalState.socket.on('gameEnd', (data) => {
+        alert(data.message);
+
+        // Clear the game and clean up
+        resetGame();
+        navigate(CurrentPage.HOME);
       });
     }
   }, [

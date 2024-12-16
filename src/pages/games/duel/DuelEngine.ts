@@ -34,8 +34,8 @@ export class DuelEngine extends LiveEngine {
   inputCheckInterval: number = 0;
   walls: number[][][] = [];
 
-  constructor(ctx: CanvasRenderingContext2D, playerId: string, socket: Socket, players: GamePlayer[]) {
-    super(ctx, playerId, socket);
+  constructor(ctx: CanvasRenderingContext2D, playerId: string, socket: Socket, isHost: boolean, players: GamePlayer[]) {
+    super(ctx, playerId, socket, isHost);
     this.initialize();
     this.updateGamePlayers(players);
 
@@ -49,6 +49,13 @@ export class DuelEngine extends LiveEngine {
       // Ready up
       if (e.code === 'Space') {
         this.socket.emit('duelReady');
+      }
+
+      // Exit the game (only if host and in the menu)
+      if (e.code === 'Escape' && this.roundStage === RoundStage.MENU && this.isHost) {
+        if (confirm(`Do you really want to end the game? This will kick all players and return you to the home screen.`)) {
+          this.socket.emit('terminateGame');
+        }
       }
     });
 
@@ -172,6 +179,14 @@ export class DuelEngine extends LiveEngine {
       this.ctx.font = `normal ${UI_FONT}`;
       this.ctx.fillStyle = UI_TEXT_COLOR.toRgbString();
       this.ctx.fillText('Press space to ready up!', MAP_W / 2, cy);
+    }
+
+    // Draw the exit instructions if host
+    if (this.isHost) {
+      this.ctx.textAlign = 'center';
+      this.ctx.font = `normal ${UI_FONT}`;
+      this.ctx.fillStyle = UI_TEXT_COLOR.toRgbString();
+      this.ctx.fillText(`You're the host, press Escape to end the game here.`, MAP_W / 2, MAP_H - 10);
     }
   }
 

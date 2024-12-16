@@ -19,6 +19,7 @@ export interface GameState {
   setGame(newGameId: string, newJoinCode: string, newPlayers: GamePlayer[], isHost?: boolean): void;
   setPlayers(newPlayers: GamePlayer[]): void;
   beginGame(): void;
+  resetGame(): void;
 }
 
 export const useGameStore = create<GameState>((set) => ({
@@ -41,5 +42,12 @@ export const useGameStore = create<GameState>((set) => ({
   }),
   beginGame: () => set({
     hasStarted: true,
+  }),
+  resetGame: () => set({
+    gameId: '',
+    joinCode: '',
+    players: [],
+    hasStarted: false,
+    isHost: false,
   }),
 }));

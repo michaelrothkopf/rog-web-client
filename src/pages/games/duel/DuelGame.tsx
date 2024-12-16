@@ -12,6 +12,7 @@ function DuelGame(props: { devBypass?: boolean }) {
   const hasStarted = useGameStore((state) => state.hasStarted);
   const playerId = useAuthStore((state) => state.user._id);
   const gamePlayers = useGameStore((state) => state.players);
+  const isHost = useGameStore((state) => state.isHost);
 
   const canvas = useRef<HTMLCanvasElement | null>(null);
   const ctx = useRef<CanvasRenderingContext2D | null>(null);
@@ -35,7 +36,7 @@ function DuelGame(props: { devBypass?: boolean }) {
 
     if (engine.current === null && globalState.socket) {
       // Create a game engine
-      engine.current = new DuelEngine(ctx.current, playerId, globalState.socket, gamePlayers);
+      engine.current = new DuelEngine(ctx.current, playerId, globalState.socket, isHost, gamePlayers);
 
       // setInterval(() => {
       //   if (engine.current) engine.current.render();
