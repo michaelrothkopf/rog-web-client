@@ -9,7 +9,7 @@ import SettingsBox from './SettingsBox';
 function HomePage() {
   return (
     <div className='page-content'>
-      <h1>Welcome to MROG!</h1>
+      <h1>Welcome to Rothkopf Online Games!</h1>
       <div className='home-grid'>
         <FriendBox />
         <FriendRequestBox />
