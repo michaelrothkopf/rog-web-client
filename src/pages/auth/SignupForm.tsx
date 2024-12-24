@@ -33,7 +33,7 @@ function SignupForm() {
     // If the authentication failed
     if (!authResult) {
       return alert(
-        `Incorrect username or password, or account doesn't exist. If you don't have an account, sign up instead.`
+        `Signup failed.`
       );
     }
 
