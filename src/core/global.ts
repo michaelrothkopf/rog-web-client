@@ -14,11 +14,13 @@ export const FRIEND_REQUEST_ACCEPT_PATH = GLOBAL_BASE_URL + '/friends/request/ac
 export const FRIEND_REQUEST_DECLINE_PATH = GLOBAL_BASE_URL + '/friends/request/decline';
 export const FRIEND_REMOVE_PATH = GLOBAL_BASE_URL + '/friends';
 
+export const HOMEPAGE_DATA_REFRESH_INTERVAL = 3000; // ms
+
 export const HEADERS = new Headers();
 export const BODY_HEADERS = new Headers();
 BODY_HEADERS.set('Content-Type', 'application/json');
 
-export const SOCKET_URL_BASE = IN_PRODUCTION ? PRODUCTION_BASE_URL : DEVELOPMENT_BASE_URL;
+export const SOCKET_URL_BASE = GLOBAL_BASE_URL;
 export const SOCKET_CONNECTION_PATH = '/live/socket.io'
 
 interface GlobalState {

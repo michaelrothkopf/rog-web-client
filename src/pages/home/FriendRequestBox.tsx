@@ -18,8 +18,11 @@ function FriendRequestBox() {
   const setFriends = useFriendStore((state) => state.setFriends);
 
   const handleDeclineRequest = (request: string) => {
+    // Tell the server to decline the request
     declineFriendRequest(request).then((success) => {
+      // If the request was declined successfully
       if (success) {
+        // Update the friend request list
         getFriendRequestsList().then((newFriendRequests) =>
           setFriendRequests(newFriendRequests)
         );
@@ -28,11 +31,15 @@ function FriendRequestBox() {
   };
 
   const handleAcceptRequest = (request: string) => {
+    // Tell the server to accept the request
     acceptFriendRequest(request).then((success) => {
+      // If the request was accepted succesfully
       if (success) {
+        // Update the friend request list
         getFriendRequestsList().then((newFriendRequests) =>
           setFriendRequests(newFriendRequests)
         );
+        // Update the friend list
         getFriendList().then((newFriends) => setFriends(newFriends));
       }
     });
@@ -42,8 +49,11 @@ function FriendRequestBox() {
     const response = prompt(
       `Enter the username of the person you'd like to friend:`
     );
+    // Validate the response length
     if (response && response.length > 3 && response.length < 50) {
+      // Create a new friend request
       createFriendRequest(response).then((success) => {
+        // If the request was successful, update the friend request list
         if (success)
           getFriendRequestsList().then((newFriendRequests) =>
             setFriendRequests(newFriendRequests)
