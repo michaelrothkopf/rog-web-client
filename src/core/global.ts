@@ -1,6 +1,10 @@
 import { Socket } from 'socket.io-client';
 
-export const GLOBAL_BASE_URL = 'http://reroutemr.zapto.org:8141';
+export const PRODUCTION_BASE_URL = 'http://reroutemr.zapto.org:8141';
+export const DEVELOPMENT_BASE_URL = 'http://localhost:8141';
+export const IN_PRODUCTION = import.meta.env.MODE === 'production';
+
+export const GLOBAL_BASE_URL = IN_PRODUCTION ? PRODUCTION_BASE_URL : DEVELOPMENT_BASE_URL;
 export const AUTH_LOGIN_PATH = GLOBAL_BASE_URL + '/auth/login';
 export const AUTH_SIGNUP_PATH = GLOBAL_BASE_URL + '/auth/signup';
 export const FRIEND_LIST_PATH = GLOBAL_BASE_URL + '/friends';
@@ -14,7 +18,7 @@ export const HEADERS = new Headers();
 export const BODY_HEADERS = new Headers();
 BODY_HEADERS.set('Content-Type', 'application/json');
 
-export const SOCKET_URL_BASE = 'http://reroutemr.zapto.org:8141/';
+export const SOCKET_URL_BASE = IN_PRODUCTION ? PRODUCTION_BASE_URL : DEVELOPMENT_BASE_URL;
 export const SOCKET_CONNECTION_PATH = '/live/socket.io'
 
 interface GlobalState {
