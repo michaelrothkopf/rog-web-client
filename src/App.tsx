@@ -12,7 +12,7 @@ import { gameStateHooks, useGameStore } from './hooks/gameStore';
 // Core logic for server-dependent actions
 import { resetAuthData, setupAuth, validateUser } from './core/auth';
 import { getFriendList, getFriendRequestsList } from './core/friends';
-import { globalState } from './core/global';
+import { globalState, IN_PRODUCTION } from './core/global';
 
 // Renderers for application components
 import NavBar from './components/navigation/NavBar';
@@ -55,9 +55,8 @@ function App() {
 
   // Attempt to login using existing information
   useEffect(() => {
-    // If already authenticated, do nothing
-    const t = true;
-    if (isAuthenticated || t) return;
+    // If already authenticated or in development mode, do nothing
+    if (isAuthenticated || !IN_PRODUCTION) return;
 
     // Get the authentication data
     const authToken = localStorage.getItem('authToken');
