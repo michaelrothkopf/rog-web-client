@@ -7,7 +7,7 @@ import { globalKeyStateManager } from "../core/KeyStateManager";
 
 export const MAP_W = 750;
 export const MAP_H = 750;
-export const MOVE_DELAY = 10;
+export const MOVE_DELAY = 25; // ms
 
 const BACKGROUND_COLOR = Color.fromHex('#FAFAFA');
 const UI_FONT = '20px Roboto';
@@ -19,7 +19,7 @@ const NOT_READY_COLOR = Color.fromHex('#990000');
 
 const WALL_COLOR = Color.fromHex('#111111');
 
-const INPUT_CHECK_INTERVAL = 20; // ms
+const INPUT_CHECK_INTERVAL = 25; // ms
 
 export enum RoundStage {
   MENU,
@@ -34,11 +34,16 @@ export class DuelEngine extends LiveEngine {
   inputCheckInterval: number = 0;
   walls: number[][][] = [];
 
+  lastAim: number = Date.now();
+  lastMovement: number = Date.now();
+
   constructor(ctx: CanvasRenderingContext2D, playerId: string, socket: Socket, isHost: boolean, players: GamePlayer[]) {
     super(ctx, playerId, socket, isHost);
     this.initialize();
     this.updateGamePlayers(players);
 
+    // Clear the input check interval just in case
+    clearInterval(this.inputCheckInterval);
     this.inputCheckInterval = setInterval(() => {
       this.checkMovement();
     }, INPUT_CHECK_INTERVAL);
@@ -79,7 +84,7 @@ export class DuelEngine extends LiveEngine {
       // Don't send aim updates on the menu screen
       if (this.roundStage !== RoundStage.BATTLE) return;
 
-      // The position of the click
+      // The position of the mouse movement
       const pos = this.convertMouseCoordinates(e.clientX, e.clientY);
 
       const player = this.getControlledPlayer();
@@ -87,8 +92,14 @@ export class DuelEngine extends LiveEngine {
 
       const direction = Math.atan2(pos.y - player.yPos, pos.x - player.xPos);
 
-      // Send an angle update
-      this.socket.emit('duelAim', { direction });
+      // Only send the aim update if it's been MOVE_DELAY ms
+      if (Date.now() - this.lastAim > MOVE_DELAY) {
+        // Send an angle update
+        this.socket.emit('duelAim', { direction });
+
+        // Update the last aim
+        this.lastAim = Date.now();
+      }
     })
   }
 
@@ -104,7 +115,11 @@ export class DuelEngine extends LiveEngine {
 
     // If the player is to move
     if (directions.length > 0) {
+      // Send the movement data
       this.socket.emit('duelMove', { directions });
+
+      // Update the last movement time
+      this.lastMovement = Date.now();
     }
   }
 
