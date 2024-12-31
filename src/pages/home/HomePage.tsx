@@ -35,6 +35,11 @@ function HomePage() {
         setFriendRequests(newFriendRequests);
       });
     }, HOMEPAGE_DATA_REFRESH_INTERVAL);
+
+    // Clear the checking function on dismount
+    return () => {
+      clearInterval(checkInterval.current);
+    };
   }, []);
 
   return (

@@ -18,6 +18,7 @@ import { globalState, IN_PRODUCTION } from './core/global';
 import NavBar from './components/navigation/NavBar';
 import HomePage from './pages/home/HomePage';
 import AuthPage from './pages/auth/AuthPage';
+import ChangePasswordPage from './pages/auth/ChangePasswordPage';
 import HilarGame from './pages/games/hilar/HilarGame';
 import DuelGame from './pages/games/duel/DuelGame';
 
@@ -183,6 +184,14 @@ function App() {
     return (
       <div className={colorScheme}>
         <AuthPage />
+      </div>
+    );
+  }
+
+  if (currentPage === CurrentPage.CHANGE_PASSWORD) {
+    return (
+      <div className={colorScheme}>
+        <ChangePasswordPage />
       </div>
     );
   }

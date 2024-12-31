@@ -1,5 +1,10 @@
 import { io } from 'socket.io-client';
-import { AUTH_LOGIN_PATH, AUTH_SIGNUP_PATH, globalState, HEADERS, BODY_HEADERS, SOCKET_CONNECTION_PATH, SOCKET_URL_BASE } from './global';
+import {
+  AUTH_LOGIN_PATH, AUTH_SIGNUP_PATH, CHANGE_PASSWORD_PATH,
+  globalState,
+  HEADERS, BODY_HEADERS,
+  SOCKET_CONNECTION_PATH, SOCKET_URL_BASE,
+} from './global';
 
 export interface User {
   _id: string,
@@ -133,4 +138,17 @@ export const doSignup = async (username: string, password: string, email: string
   });
 
   return doAuthentication(response);
+}
+
+export const doChangePassword = async (oldPassword: string, newPassword: string): Promise<boolean> => {
+  // Attempt to change the password
+  const response = await fetch(CHANGE_PASSWORD_PATH, {
+    method: 'POST',
+    body: JSON.stringify({
+      oldPassword, newPassword,
+    }),
+    headers: BODY_HEADERS,
+  });
+
+  return response.ok;
 }

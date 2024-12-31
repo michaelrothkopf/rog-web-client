@@ -5,8 +5,11 @@ export const DEVELOPMENT_BASE_URL = 'http://localhost:8141';
 export const IN_PRODUCTION = import.meta.env.MODE === 'production';
 
 export const GLOBAL_BASE_URL = IN_PRODUCTION ? PRODUCTION_BASE_URL : DEVELOPMENT_BASE_URL;
+
 export const AUTH_LOGIN_PATH = GLOBAL_BASE_URL + '/auth/login';
 export const AUTH_SIGNUP_PATH = GLOBAL_BASE_URL + '/auth/signup';
+export const CHANGE_PASSWORD_PATH = GLOBAL_BASE_URL + '/auth/change_password';
+
 export const FRIEND_LIST_PATH = GLOBAL_BASE_URL + '/friends';
 export const FRIEND_REQUEST_PATH = GLOBAL_BASE_URL + '/friends/request';
 export const FRIEND_REQUEST_LIST_PATH = GLOBAL_BASE_URL + '/friends/request';

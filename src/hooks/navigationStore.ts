@@ -4,6 +4,7 @@ export enum CurrentPage {
   HOME,
   FRIENDS,
   CHAT,
+  CHANGE_PASSWORD,
 
   // Games
   HILAR,

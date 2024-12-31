@@ -1,8 +1,11 @@
 import './SettingsBox.css';
 import { COLOR_SCHEMES, useSettingStore } from '../../hooks/settingStore';
 import { ChangeEvent } from 'react';
+import { CurrentPage, useNavigationStore } from '../../hooks/navigationStore';
 
 function SettingsBox() {
+  const navigate = useNavigationStore((state) => state.navigate);
+
   const colorScheme = useSettingStore((state) => state.colorScheme);
   const setColorScheme = useSettingStore((state) => state.setColorScheme);
 
@@ -29,6 +32,7 @@ function SettingsBox() {
           ))}
         </select>
       </div>
+      <button onClick={() => { navigate(CurrentPage.CHANGE_PASSWORD) }}>Change password</button>
     </div>
   );
 }
