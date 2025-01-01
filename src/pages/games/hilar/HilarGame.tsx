@@ -17,6 +17,7 @@ enum RoundStage {
   LEADERBOARD,
 }
 
+// The current question and responses on which players are voting
 interface VoteState {
   prompt: string;
   options: string[];
@@ -24,6 +25,7 @@ interface VoteState {
 }
 const VOTE_STATE_BLANK: VoteState = { prompt: '', options: [], canVote: true };
 
+// The voting results for the current question
 interface VoteResultState {
   winner: number;
   p1name: string;
@@ -41,6 +43,7 @@ const VOTE_RESULT_STATE_BLANK: VoteResultState = {
   scoreChange: 0,
 };
 
+// Information about an individual player's standings on the leaderboard
 interface StandingsState {
   userId: string;
   displayName: string;
@@ -51,12 +54,15 @@ function HilarGame() {
   const hasStarted = useGameStore((state) => state.hasStarted);
   const [roundStage, setRoundStage] = useState<RoundStage>(RoundStage.LOAD);
 
+  // The user's questions and the responses they have entered
   const [questions, setQuestions] = useState<string[]>([]);
   const [responses, setResponses] = useState<string[]>([]);
+  // The questions, responses, and results for voting
   const [voteData, setVoteData] = useState<VoteState>(VOTE_STATE_BLANK);
   const [voteResult, setVoteResult] = useState<VoteResultState>(
     VOTE_RESULT_STATE_BLANK
   );
+  // The leaderboard standings
   const [standings, setStandings] = useState<StandingsState[]>([]);
 
   // Cleanup function
