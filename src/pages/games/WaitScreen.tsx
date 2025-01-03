@@ -54,6 +54,7 @@ function WaitScreen() {
             ? `You're the host! Press "begin game" below when you're ready.`
             : `Waiting for the host to start the game...`}
         </h2>
+        {isHost ? <h3>Press escape to terminate the game.</h3> : <></>}
         <h3>
           {players.length} / {gameConfig.maxPlayers} players
         </h3>
@@ -67,7 +68,6 @@ function WaitScreen() {
         <h3>Join code:</h3>
         <h4>{joinCode}</h4>
         {isHost ? <button onClick={beginGame}>Begin game</button> : <></>}
-        {isHost ? <h3>Press escape to terminate the game.</h3> : <></>}
       </div>
     </div>
   );
