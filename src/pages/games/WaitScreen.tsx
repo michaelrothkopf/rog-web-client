@@ -67,7 +67,7 @@ function WaitScreen() {
         <h3>Join code:</h3>
         <h4>{joinCode}</h4>
         {isHost ? <button onClick={beginGame}>Begin game</button> : <></>}
-        {isHost ? <h4>Press escape to terminate the game.</h4> : <></>}
+        {isHost ? <h3>Press escape to terminate the game.</h3> : <></>}
       </div>
     </div>
   );
