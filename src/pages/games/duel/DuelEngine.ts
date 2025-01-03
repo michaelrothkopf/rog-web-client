@@ -19,12 +19,27 @@ const NOT_READY_COLOR = Color.fromHex('#990000');
 
 const WALL_COLOR = Color.fromHex('#111111');
 
+const SHOT_COLOR = Color.fromHex('#FFD700');
+
 const INPUT_CHECK_INTERVAL = 25; // ms
+const SHOT_DISPLAY_TIME = 50; // ms
 
 export enum RoundStage {
   MENU,
   BATTLE,
   RESULTS,
+}
+
+// Shot line rendering data
+interface ShotData {
+  userId: string;
+  startX: number;
+  startY: number;
+  endX: number;
+  endY: number;
+  direction: number;
+  hit: string;
+  time: number;
 }
 
 export class DuelEngine extends LiveEngine {
@@ -36,6 +51,8 @@ export class DuelEngine extends LiveEngine {
 
   lastAim: number = Date.now();
   lastMovement: number = Date.now();
+
+  shots: ShotData[] = [];
 
   constructor(ctx: CanvasRenderingContext2D, playerId: string, socket: Socket, isHost: boolean, players: GamePlayer[]) {
     super(ctx, playerId, socket, isHost);
@@ -106,9 +123,9 @@ export class DuelEngine extends LiveEngine {
 
   initialize() {
     // Add all the event listeners
-    window.addEventListener('keydown', this.keydownListener);
-    this.ctx.canvas.addEventListener('click', this.clickListener);
-    this.ctx.canvas.addEventListener('mousemove', this.mouseMoveListener);
+    window.addEventListener('keydown', this.keydownListener.bind(this));
+    this.ctx.canvas.addEventListener('click', this.clickListener.bind(this));
+    this.ctx.canvas.addEventListener('mousemove', this.mouseMoveListener.bind(this));
   }
 
   checkMovement() {
@@ -243,6 +260,21 @@ export class DuelEngine extends LiveEngine {
     for (const p of this.players) {
       p.render(this.ctx);
     }
+
+    // Draw all the shots in the battle
+    let newShots: ShotData[] = [];
+    for (const shot of this.shots) {
+      if (Date.now() - shot.time < SHOT_DISPLAY_TIME) {
+        // Add the shot to the next frame's render list
+        newShots.push(shot);
+        // Draw the shot
+        this.ctx.beginPath();
+        this.ctx.fillStyle = SHOT_COLOR.toRgbString();
+        this.ctx.moveTo(shot.startX, shot.startY);
+        this.ctx.lineTo(shot.endX, shot.endY);
+        this.ctx.stroke();
+      }
+    }
   }
 
   drawResults() {
@@ -304,6 +336,12 @@ export class DuelEngine extends LiveEngine {
     p.health = health;
     p.aimAngle = aimAngle;
     this.render();
+  }
+
+  handleShot(userId: string, startX: number, startY: number, endX: number, endY: number, direction: number, hit: string) {
+    this.shots.push({
+      userId, startX, startY, endX, endY, direction, hit, time: Date.now()
+    });
   }
 
   getControlledPlayer() {

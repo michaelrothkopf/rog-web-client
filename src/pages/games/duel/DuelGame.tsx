@@ -111,6 +111,14 @@ function DuelGame(props: { devBypass?: boolean }) {
       engine.current.updatePlayerState(data.userId, data.xPos, data.yPos, data.health, data.aimAngle);
     });
   }
+  // Shot listener
+  if (!globalState.socket.hasListeners('duelShot')) {
+    globalState.socket.on('duelShot', (data) => {
+      if (!('userId' in data) || !('startX' in data) || !('startY' in data) || !('endX' in data) || !('endY' in data) || !('direction' in data) || !('hit' in data)) return;
+      if (!engine.current) return;
+      engine.current.updatePlayerState(data.userId, data.xPos, data.yPos, data.health, data.aimAngle);
+    });
+  }
 
   // Load if not started
   if (!props.devBypass && !hasStarted) {

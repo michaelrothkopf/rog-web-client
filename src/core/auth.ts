@@ -4,6 +4,7 @@ import {
   globalState,
   HEADERS, BODY_HEADERS,
   SOCKET_CONNECTION_PATH, SOCKET_URL_BASE,
+  VALIDATE_AUTHTOKEN_PATH,
 } from './global';
 
 export interface User {
@@ -79,6 +80,21 @@ export const setupAuth = (authData: AuthData) => {
       token: authData.token,
     },
   });
+}
+
+export const validateAuthtoken = async (authtoken: string) => {
+  // Set the authtoken header
+  const headers = new Headers();
+  headers.set('Authtoken', authtoken);
+  
+  // Get the response
+  const response = await fetch(VALIDATE_AUTHTOKEN_PATH, {
+    method: 'GET',
+    headers: headers,
+  });
+
+  // Return whether validation was successful
+  return response.status === 200;
 }
 
 const doAuthentication = async (response: Response): Promise<AuthData | null> => {

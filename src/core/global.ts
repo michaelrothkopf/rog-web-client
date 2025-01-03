@@ -9,6 +9,7 @@ export const GLOBAL_BASE_URL = IN_PRODUCTION ? PRODUCTION_BASE_URL : DEVELOPMENT
 export const AUTH_LOGIN_PATH = GLOBAL_BASE_URL + '/auth/login';
 export const AUTH_SIGNUP_PATH = GLOBAL_BASE_URL + '/auth/signup';
 export const CHANGE_PASSWORD_PATH = GLOBAL_BASE_URL + '/auth/change_password';
+export const VALIDATE_AUTHTOKEN_PATH = GLOBAL_BASE_URL + '/auth/validate_authtoken';
 
 export const FRIEND_LIST_PATH = GLOBAL_BASE_URL + '/friends';
 export const FRIEND_REQUEST_PATH = GLOBAL_BASE_URL + '/friends/request';

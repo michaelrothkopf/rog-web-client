@@ -10,7 +10,7 @@ import { useFriendStore } from './hooks/friendStore';
 import { gameStateHooks, useGameStore } from './hooks/gameStore';
 
 // Core logic for server-dependent actions
-import { resetAuthData, setupAuth, validateUser } from './core/auth';
+import { setupAuth, validateAuthtoken, validateUser } from './core/auth';
 import { getFriendList, getFriendRequestsList } from './core/friends';
 import { globalState, IN_PRODUCTION } from './core/global';
 
@@ -30,6 +30,7 @@ function App() {
 
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const authenticate = useAuthStore((state) => state.authenticate);
+  const logout = useAuthStore((state) => state.logout);
 
   const currentPage = useNavigationStore((state) => state.currentPage);
   const navigate = useNavigationStore((state) => state.navigate);
@@ -56,36 +57,48 @@ function App() {
 
   // Attempt to login using existing information
   useEffect(() => {
-    // If already authenticated or in development mode, do nothing
-    if (isAuthenticated || !IN_PRODUCTION) return;
+    (async () => {
+      // If already authenticated or in development mode, do nothing
+      if (isAuthenticated || !IN_PRODUCTION) return;
 
-    // Get the authentication data
-    const authToken = localStorage.getItem('authToken');
-    const authTokenExpires = localStorage.getItem('authTokenExpires');
-    const authUser = attemptJsonParse(localStorage.getItem('authUser'));
+      // Get the authentication data
+      const authToken = localStorage.getItem('authToken');
+      const authTokenExpires = localStorage.getItem('authTokenExpires');
+      const authUser = attemptJsonParse(localStorage.getItem('authUser'));
 
-    if (
-      authToken &&
-      authTokenExpires &&
-      !isNaN(new Date(authTokenExpires).getTime()) &&
-      authUser &&
-      validateUser(authUser) &&
-      new Date() < new Date(authTokenExpires)
-    ) {
-      // Set the unbound global variables for an authenticated state
-      setupAuth({
-        token: authToken,
-        tokenExpires: new Date(authTokenExpires),
-        user: authUser,
-      });
+      if (
+        authToken &&
+        authTokenExpires &&
+        !isNaN(new Date(authTokenExpires).getTime()) &&
+        authUser &&
+        validateUser(authUser) &&
+        new Date() < new Date(authTokenExpires)
+      ) {
+        try {
+          // Check with the server that the authtoken is valid
+          const authtokenValid = await validateAuthtoken(authToken);
+          if (!authtokenValid) {
+            return logout();
+          }
 
-      // Authentication data from localStorage is valid
-      authenticate({
-        token: authToken,
-        tokenExpires: new Date(authTokenExpires),
-        user: authUser,
-      });
-    } else resetAuthData();
+          // Set the unbound global variables for an authenticated state
+          setupAuth({
+            token: authToken,
+            tokenExpires: new Date(authTokenExpires),
+            user: authUser,
+          });
+
+          // Authentication data from localStorage is valid
+          authenticate({
+            token: authToken,
+            tokenExpires: new Date(authTokenExpires),
+            user: authUser,
+          });
+        } catch (e) {
+          logout();
+        }
+      } else logout();
+    })();
   }, [isAuthenticated, authenticate]);
 
   // When there is a change in the authentication state
