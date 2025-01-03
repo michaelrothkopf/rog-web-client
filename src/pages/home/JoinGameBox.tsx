@@ -27,7 +27,7 @@ function JoinGameBox() {
         placeholder='Join code'
       />
       <button className='create-game' onClick={handleJoinGame}>
-        Create
+        Join
       </button>
       <p className='join-code'>{joinCode}</p>
     </div>

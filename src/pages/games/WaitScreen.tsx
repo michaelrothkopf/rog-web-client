@@ -1,5 +1,9 @@
+import { useEffect } from 'react';
+
 import { AVAILABLE_GAMES, beginGame } from '../../core/game';
 import { useGameStore } from '../../hooks/gameStore';
+
+import { globalState } from '../../core/global';
 
 import './WaitScreen.css';
 
@@ -8,6 +12,27 @@ function WaitScreen() {
   const joinCode = useGameStore((state) => state.joinCode);
   const isHost = useGameStore((state) => state.isHost);
   const players = useGameStore((state) => state.players);
+
+  // Listen for termination of game
+  const keydownListener = (e: KeyboardEvent) => {
+    // Exit the game (only if host)
+    if (e.code === 'Escape' && isHost) {
+      if (!globalState.socket) return;
+      if (confirm(`Do you really want to end the game? This will kick all players and return you to the home screen.`)) {
+        globalState.socket.emit('terminateGame');
+      }
+    }
+  }
+
+  // Create termination listener
+  useEffect(() => {
+    window.addEventListener('keydown', keydownListener);
+
+    // Cleanup the termination listener
+    return () => {
+      window.removeEventListener('keydown', keydownListener);
+    }
+  });
 
   const gameConfig = AVAILABLE_GAMES.find((game) => game.gameId === gameId);
   // If the game wasn't found
@@ -42,6 +67,7 @@ function WaitScreen() {
         <h3>Join code:</h3>
         <h4>{joinCode}</h4>
         {isHost ? <button onClick={beginGame}>Begin game</button> : <></>}
+        {isHost ? <h4>Press escape to terminate the game.</h4> : <></>}
       </div>
     </div>
   );

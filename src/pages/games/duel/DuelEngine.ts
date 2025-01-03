@@ -49,58 +49,66 @@ export class DuelEngine extends LiveEngine {
     }, INPUT_CHECK_INTERVAL);
   }
 
-  initialize() {
-    window.addEventListener('keydown', (e) => {
-      // Ready up
-      if (e.code === 'Space') {
-        this.socket.emit('duelReady');
+  // Handle keyboard events (non-movement) during the game
+  keydownListener(e: KeyboardEvent) {
+    // Ready up
+    if (e.code === 'Space') {
+      if (this.roundStage === RoundStage.MENU) this.socket.emit('duelReady');
+    }
+
+    // Exit the game (only if host and in the menu)
+    if (e.code === 'Escape' && this.roundStage === RoundStage.MENU && this.isHost) {
+      if (confirm(`Do you really want to end the game? This will kick all players and return you to the home screen.`)) {
+        this.socket.emit('terminateGame');
       }
+    }
+  }
+  
+  // Handle click events (shooting)
+  clickListener(e: MouseEvent) {
+    // The position of the click
+    const pos = this.convertMouseCoordinates(e.clientX, e.clientY);
 
-      // Exit the game (only if host and in the menu)
-      if (e.code === 'Escape' && this.roundStage === RoundStage.MENU && this.isHost) {
-        if (confirm(`Do you really want to end the game? This will kick all players and return you to the home screen.`)) {
-          this.socket.emit('terminateGame');
-        }
-      }
-    });
+    const player = this.getControlledPlayer();
+    if (!player) return;
 
-    this.ctx.canvas.addEventListener('click', (e) => {
-      // The position of the click
-      const pos = this.convertMouseCoordinates(e.clientX, e.clientY);
+    const direction = Math.atan2(pos.y - player.yPos, pos.x - player.xPos);
 
-      const player = this.getControlledPlayer();
-      if (!player) return;
+    // Send an angle update
+    this.socket.emit('duelAim', { direction });
 
-      const direction = Math.atan2(pos.y - player.yPos, pos.x - player.xPos);
+    // Send the shot
+    this.socket.emit('duelShoot', { direction });
+  }
 
+  // Handle mouse movement events (aim)
+  mouseMoveListener(e: MouseEvent) {
+    // Don't send aim updates on the menu screen
+    if (this.roundStage !== RoundStage.BATTLE) return;
+
+    // The position of the mouse movement
+    const pos = this.convertMouseCoordinates(e.clientX, e.clientY);
+
+    const player = this.getControlledPlayer();
+    if (!player) return;
+
+    const direction = Math.atan2(pos.y - player.yPos, pos.x - player.xPos);
+
+    // Only send the aim update if it's been MOVE_DELAY ms
+    if (Date.now() - this.lastAim > MOVE_DELAY) {
       // Send an angle update
       this.socket.emit('duelAim', { direction });
 
-      // Send the shot
-      this.socket.emit('duelShoot', { direction });
-    });
+      // Update the last aim
+      this.lastAim = Date.now();
+    }
+  }
 
-    this.ctx.canvas.addEventListener('mousemove', (e) => {
-      // Don't send aim updates on the menu screen
-      if (this.roundStage !== RoundStage.BATTLE) return;
-
-      // The position of the mouse movement
-      const pos = this.convertMouseCoordinates(e.clientX, e.clientY);
-
-      const player = this.getControlledPlayer();
-      if (!player) return;
-
-      const direction = Math.atan2(pos.y - player.yPos, pos.x - player.xPos);
-
-      // Only send the aim update if it's been MOVE_DELAY ms
-      if (Date.now() - this.lastAim > MOVE_DELAY) {
-        // Send an angle update
-        this.socket.emit('duelAim', { direction });
-
-        // Update the last aim
-        this.lastAim = Date.now();
-      }
-    })
+  initialize() {
+    // Add all the event listeners
+    window.addEventListener('keydown', this.keydownListener);
+    this.ctx.canvas.addEventListener('click', this.clickListener);
+    this.ctx.canvas.addEventListener('mousemove', this.mouseMoveListener);
   }
 
   checkMovement() {
@@ -306,6 +314,11 @@ export class DuelEngine extends LiveEngine {
   }
 
   cleanup() {
+    // Clear the input check interval
     clearInterval(this.inputCheckInterval);
+    // Remove event listeners
+    window.removeEventListener('keydown', this.keydownListener);
+    this.ctx.canvas.removeEventListener('click', this.clickListener);
+    this.ctx.canvas.removeEventListener('mousemove', this.mouseMoveListener);
   }
 }
