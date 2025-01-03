@@ -19,10 +19,10 @@ const NOT_READY_COLOR = Color.fromHex('#990000');
 
 const WALL_COLOR = Color.fromHex('#111111');
 
-const SHOT_COLOR = Color.fromHex('#FFD700');
+// const SHOT_COLOR = Color.fromHex('#FFD700');
 
 const INPUT_CHECK_INTERVAL = 25; // ms
-const SHOT_DISPLAY_TIME = 50; // ms
+// const SHOT_DISPLAY_TIME = 50; // ms
 
 export enum RoundStage {
   MENU,
@@ -262,19 +262,19 @@ export class DuelEngine extends LiveEngine {
     }
 
     // Draw all the shots in the battle
-    let newShots: ShotData[] = [];
-    for (const shot of this.shots) {
-      if (Date.now() - shot.time < SHOT_DISPLAY_TIME) {
-        // Add the shot to the next frame's render list
-        newShots.push(shot);
-        // Draw the shot
-        this.ctx.beginPath();
-        this.ctx.fillStyle = SHOT_COLOR.toRgbString();
-        this.ctx.moveTo(shot.startX, shot.startY);
-        this.ctx.lineTo(shot.endX, shot.endY);
-        this.ctx.stroke();
-      }
-    }
+    // let newShots: ShotData[] = [];
+    // for (const shot of this.shots) {
+    //   // Add the shot to the next frame's render list
+    //   newShots.push(shot);
+    //   // Draw the shot
+    //   this.ctx.beginPath();
+    //   this.ctx.fillStyle = '#ff0000';
+    //   this.ctx.lineWidth = 5;
+    //   this.ctx.moveTo(shot.startX, shot.startY);
+    //   this.ctx.lineTo(shot.endX, shot.endY);
+    //   this.ctx.stroke();
+    // }
+    // this.shots = newShots;
   }
 
   drawResults() {
