@@ -11,14 +11,14 @@ const GUN_LENGTH = 8;
 
 const PLAYER_UI_FONT = '16px sans-serif';
 
-const USERNAME_OFFSET_Y = 15;
+const USERNAME_OFFSET_Y = 25;
 const USERNAME_COLOR = Color.fromHex('#888888');
 
 const HIGH_HEALTH_COLOR = Color.fromHex('#00aa00');
 const MID_HEALTH_COLOR = Color.fromHex('#c97600');
 const LOW_HEALTH_COLOR = Color.fromHex('#aa0000');
 const HEALTH_BACKGROUND_COLOR = Color.fromHex('#cccccc');
-const HEALTHBAR_OFFSET_Y = 10;
+const HEALTHBAR_OFFSET_Y = 17;
 const HEALTHBAR_HEIGHT = 5;
 const HEALTHBAR_MAX_WIDTH = PLAYER_WIDTH * 1.25;
 

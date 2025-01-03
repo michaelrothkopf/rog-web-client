@@ -19,10 +19,10 @@ const NOT_READY_COLOR = Color.fromHex('#990000');
 
 const WALL_COLOR = Color.fromHex('#111111');
 
-// const SHOT_COLOR = Color.fromHex('#FFD700');
+const SHOT_COLOR = Color.fromHex('#ff0000'); //'#FFD700');
 
 const INPUT_CHECK_INTERVAL = 25; // ms
-// const SHOT_DISPLAY_TIME = 50; // ms
+const SHOT_DISPLAY_TIME = 25; // ms
 
 export enum RoundStage {
   MENU,
@@ -35,8 +35,8 @@ interface ShotData {
   userId: string;
   startX: number;
   startY: number;
-  endX: number;
-  endY: number;
+  hitX: number;
+  hitY: number;
   direction: number;
   hit: string;
   time: number;
@@ -262,19 +262,23 @@ export class DuelEngine extends LiveEngine {
     }
 
     // Draw all the shots in the battle
-    // let newShots: ShotData[] = [];
-    // for (const shot of this.shots) {
-    //   // Add the shot to the next frame's render list
-    //   newShots.push(shot);
-    //   // Draw the shot
-    //   this.ctx.beginPath();
-    //   this.ctx.fillStyle = '#ff0000';
-    //   this.ctx.lineWidth = 5;
-    //   this.ctx.moveTo(shot.startX, shot.startY);
-    //   this.ctx.lineTo(shot.endX, shot.endY);
-    //   this.ctx.stroke();
-    // }
-    // this.shots = newShots;
+    let newShots: ShotData[] = [];
+    for (const shot of this.shots) {
+      console.log(`Rendering shot ${JSON.stringify(shot)} (expired: ${Date.now() - shot.time > SHOT_DISPLAY_TIME})`);
+      // If the shot has expired
+      if (Date.now() - shot.time > SHOT_DISPLAY_TIME) continue;
+
+      // Add the shot to the next frame's render list
+      newShots.push(shot);
+      // Draw the shot
+      this.ctx.beginPath();
+      this.ctx.strokeStyle = SHOT_COLOR.toRgbString();
+      this.ctx.lineWidth = 2;
+      this.ctx.moveTo(shot.startX, MAP_H - shot.startY);
+      this.ctx.lineTo(shot.hitX, MAP_H - shot.hitY);
+      this.ctx.stroke();
+    }
+    this.shots = newShots;
   }
 
   drawResults() {
@@ -338,9 +342,12 @@ export class DuelEngine extends LiveEngine {
     this.render();
   }
 
-  handleShot(userId: string, startX: number, startY: number, endX: number, endY: number, direction: number, hit: string) {
+  /**
+   * Adds shot information for a new shot to the render list
+   */
+  handleShot(userId: string, startX: number, startY: number, hitX: number, hitY: number, direction: number, hit: string) {
     this.shots.push({
-      userId, startX, startY, endX, endY, direction, hit, time: Date.now()
+      userId, startX, startY, hitX, hitY, direction, hit, time: Date.now()
     });
   }
 

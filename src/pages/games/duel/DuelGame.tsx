@@ -53,6 +53,7 @@ function DuelGame(props: { devBypass?: boolean }) {
         globalState.socket.removeAllListeners('duelResult');
         globalState.socket.removeAllListeners('duelReadyState');
         globalState.socket.removeAllListeners('duelPlayerState');
+        globalState.socket.removeAllListeners('duelShot');
       }
 
       if (engine.current) {
@@ -114,9 +115,9 @@ function DuelGame(props: { devBypass?: boolean }) {
   // Shot listener
   if (!globalState.socket.hasListeners('duelShot')) {
     globalState.socket.on('duelShot', (data) => {
-      if (!('userId' in data) || !('startX' in data) || !('startY' in data) || !('endX' in data) || !('endY' in data) || !('direction' in data) || !('hit' in data)) return;
+      if (!('userId' in data) || !('startX' in data) || !('startY' in data) || !('hitX' in data) || !('hitY' in data) || !('direction' in data) || !('hit' in data)) return;
       if (!engine.current) return;
-      engine.current.updatePlayerState(data.userId, data.xPos, data.yPos, data.health, data.aimAngle);
+      engine.current.handleShot(data.userId, data.startX, data.startY, data.hitX, data.hitY, data.direction, data.hit);
     });
   }
 
