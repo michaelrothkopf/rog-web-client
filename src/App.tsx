@@ -21,6 +21,7 @@ import AuthPage from './pages/auth/AuthPage';
 import ChangePasswordPage from './pages/auth/ChangePasswordPage';
 import HilarGame from './pages/games/hilar/HilarGame';
 import DuelGame from './pages/games/duel/DuelGame';
+import ChatGame from './pages/games/chat/ChatGame';
 
 // Utilities
 import { attemptJsonParse } from './utils';
@@ -126,8 +127,6 @@ function App() {
     if (globalState.socket) {
       // When the client joins a game
       globalState.socket.on('gameInfo', (data) => {
-        console.log('gameInfo', data);
-
         if (
           !data.gameId ||
           !data.joinCode ||
@@ -138,7 +137,7 @@ function App() {
         }
 
         // Update the game state
-        setGame(data.gameId, data.joinCode, [], data.isHost || false);
+        setGame(data.gameId, data.joinCode, [], data.hasBegun || false, data.isHost || false);
 
         // Navigate to the correct game
         switch (data.gameId) {
@@ -147,6 +146,9 @@ function App() {
             break;
           case 'DUEL':
             navigate(CurrentPage.DUEL);
+            break;
+          case 'CHAT':
+            navigate(CurrentPage.CHAT);
             break;
           default:
             break;
@@ -227,6 +229,14 @@ function App() {
     return (
       <div className={colorScheme}>
         <DuelGame />
+      </div>
+    );
+  }
+
+  if (currentPage === CurrentPage.CHAT) {
+    return (
+      <div className={colorScheme}>
+        <ChatGame />
       </div>
     );
   }

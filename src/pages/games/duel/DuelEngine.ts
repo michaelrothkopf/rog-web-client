@@ -264,7 +264,6 @@ export class DuelEngine extends LiveEngine {
     // Draw all the shots in the battle
     let newShots: ShotData[] = [];
     for (const shot of this.shots) {
-      console.log(`Rendering shot ${JSON.stringify(shot)} (expired: ${Date.now() - shot.time > SHOT_DISPLAY_TIME})`);
       // If the shot has expired
       if (Date.now() - shot.time > SHOT_DISPLAY_TIME) continue;
 
@@ -333,7 +332,6 @@ export class DuelEngine extends LiveEngine {
    */
   updatePlayerState(userId: string, xPos: number, yPos: number, health: number, aimAngle: number) {
     const p = this.players.find(p => p.userId === userId);
-    // console.log(`UPS: ${p}, ${userId}, ${xPos}, ${yPos}, ${health}, ${aimAngle} rad`);
     if (!p) return;
     p.xPos = xPos;
     p.yPos = MAP_H - yPos;

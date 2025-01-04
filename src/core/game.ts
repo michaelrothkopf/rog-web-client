@@ -18,6 +18,7 @@ export interface OutsiderGameData {
 export const AVAILABLE_GAMES: GameMetadata[] = [
   { gameId: 'HILAR', friendlyName: 'Hilar', minPlayers: 2, maxPlayers: 8 },
   { gameId: 'DUEL', friendlyName: 'Duel', minPlayers: 2, maxPlayers: 2 },
+  { gameId: 'CHAT', friendlyName: 'Chat', minPlayers: 1, maxPlayers: 32 },
 ];
 
 export const createGame = (gameId: string) => {

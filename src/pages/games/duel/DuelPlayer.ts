@@ -42,7 +42,6 @@ export class Player extends GameObject {
   }
 
   render(ctx: CanvasRenderingContext2D): void {
-    console.log('render')
     // Draw the actual box
     this.draw(ctx);
 

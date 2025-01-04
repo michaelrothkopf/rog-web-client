@@ -13,10 +13,10 @@ export interface GameState {
   gameId: string;
   joinCode: string;
   players: GamePlayer[];
-  hasStarted: boolean;
+  hasBegun: boolean;
   isHost: boolean;
 
-  setGame(newGameId: string, newJoinCode: string, newPlayers: GamePlayer[], isHost?: boolean): void;
+  setGame(newGameId: string, newJoinCode: string, newPlayers: GamePlayer[], hasBegun?: boolean, isHost?: boolean): void;
   setPlayers(newPlayers: GamePlayer[]): void;
   beginGame(): void;
   resetGame(): void;
@@ -27,27 +27,27 @@ export const useGameStore = create<GameState>((set) => ({
   gameId: '',
   joinCode: '',
   players: [],
-  hasStarted: false,
+  hasBegun: false,
   isHost: false,
 
-  setGame: (newGameId: string, newJoinCode: string, newPlayers: GamePlayer[], isHost?: boolean) => set({
+  setGame: (newGameId: string, newJoinCode: string, newPlayers: GamePlayer[], hasBegun?: boolean, isHost?: boolean) => set({
     gameId: newGameId,
     joinCode: newJoinCode,
     players: newPlayers,
-    hasStarted: false,
+    hasBegun: hasBegun || false,
     isHost: isHost || false,
   }),
   setPlayers: (newPlayers: GamePlayer[]) => set({
     players: newPlayers,
   }),
   beginGame: () => set({
-    hasStarted: true,
+    hasBegun: true,
   }),
   resetGame: () => set({
     gameId: '',
     joinCode: '',
     players: [],
-    hasStarted: false,
+    hasBegun: false,
     isHost: false,
   }),
 }));

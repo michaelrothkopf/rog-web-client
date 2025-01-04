@@ -9,7 +9,7 @@ import WaitScreen from '../WaitScreen';
 import { DuelEngine, MAP_H, MAP_W, RoundStage } from './DuelEngine';
 
 function DuelGame(props: { devBypass?: boolean }) {
-  const hasStarted = useGameStore((state) => state.hasStarted);
+  const hasBegun = useGameStore((state) => state.hasBegun);
   const playerId = useAuthStore((state) => state.user._id);
   const gamePlayers = useGameStore((state) => state.players);
   const isHost = useGameStore((state) => state.isHost);
@@ -19,9 +19,8 @@ function DuelGame(props: { devBypass?: boolean }) {
   const engine = useRef<DuelEngine | null>(null);
 
   useEffect(() => {
-    // If there is no canvas, should execute again once hasStarted is updated; don't do anything on this run
+    // If there is no canvas, should execute again once hasBegun is updated; don't do anything on this run
     if (!canvas.current) {
-      console.log('no current canvas');
       return;
     }
 
@@ -30,7 +29,6 @@ function DuelGame(props: { devBypass?: boolean }) {
 
     // Error: no context on the canvas
     if (!ctx.current) {
-      console.log('no current context');
       return;
     }
 
@@ -42,7 +40,7 @@ function DuelGame(props: { devBypass?: boolean }) {
       //   if (engine.current) engine.current.render();
       // }, 10);
     }
-  }, [hasStarted]);
+  }, [hasBegun]);
 
   // Cleanup function
   useEffect(() => {
@@ -122,7 +120,7 @@ function DuelGame(props: { devBypass?: boolean }) {
   }
 
   // Load if not started
-  if (!props.devBypass && !hasStarted) {
+  if (!props.devBypass && !hasBegun) {
     return <WaitScreen />;
   }
 

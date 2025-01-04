@@ -51,7 +51,7 @@ interface StandingsState {
 }
 
 function HilarGame() {
-  const hasStarted = useGameStore((state) => state.hasStarted);
+  const hasBegun = useGameStore((state) => state.hasBegun);
   const [roundStage, setRoundStage] = useState<RoundStage>(RoundStage.LOAD);
 
   // The user's questions and the responses they have entered
@@ -65,8 +65,24 @@ function HilarGame() {
   // The leaderboard standings
   const [standings, setStandings] = useState<StandingsState[]>([]);
 
-  // Cleanup function
+  // Event listener handling
   useEffect(() => {
+    if (globalState.socket) {
+      // Add event listeners
+      if (!globalState.socket.hasListeners('hilarQuestions')) {
+        globalState.socket.on('hilarQuestions', handleQuestions);
+      }
+      if (!globalState.socket.hasListeners('hilarVoteQuestion')) {
+        globalState.socket.on('hilarVoteQuestion', handleVoteQuestion);
+      }
+      if (!globalState.socket.hasListeners('hilarVoteResult')) {
+        globalState.socket.on('hilarVoteResult', handleVoteResult);
+      }
+      if (!globalState.socket.hasListeners('hilarLeaderboard')) {
+        globalState.socket.on('hilarLeaderboard', handleLeaderboard);
+      }
+    }
+
     return () => {
       if (globalState.socket) {
         globalState.socket.removeAllListeners('hilarQuestions');
@@ -82,6 +98,9 @@ function HilarGame() {
     return <p>Critical client error: socket undefined.</p>;
   }
 
+  /**
+   * Handles when the user finishes responding to a prompt
+   */
   const handleResponse = (response: string) => {
     setResponses(responses.concat([response]));
     setQuestions(questions.slice(1));
@@ -97,6 +116,9 @@ function HilarGame() {
     }
   };
 
+  /**
+   * Handles when the user votes for a question
+   */
   const handleVote = (vote: number) => {
     // Update the state
     setVoteData({
@@ -113,85 +135,91 @@ function HilarGame() {
     }
   };
 
-  // Add event listeners
-  if (!globalState.socket.hasListeners('hilarQuestions')) {
-    globalState.socket.on('hilarQuestions', (data) => {
-      if (
-        !Array.isArray(data.questions) ||
-        !(data.questions.length === 2) ||
-        typeof data.questions[0] !== 'string' ||
-        typeof data.questions[1] !== 'string'
-      ) {
-        return;
-      }
+  /**
+   * When the client receives the questions to respond to from the server
+   */
+  const handleQuestions = (data: any) => {
+    if (
+      !Array.isArray(data.questions) ||
+      !(data.questions.length === 2) ||
+      typeof data.questions[0] !== 'string' ||
+      typeof data.questions[1] !== 'string'
+    ) {
+      return;
+    }
 
-      setQuestions(data.questions);
-      setRoundStage(RoundStage.RESPOND);
-    });
+    setQuestions(data.questions);
+    setRoundStage(RoundStage.RESPOND);
   }
-  if (!globalState.socket.hasListeners('hilarVoteQuestion')) {
-    globalState.socket.on('hilarVoteQuestion', (data) => {
-      // Validate the response object
-      if (
-        typeof data.prompt !== 'string' ||
-        !Array.isArray(data.options) ||
-        !(data.options.length === 2) ||
-        typeof data.options[0] !== 'string' ||
-        typeof data.options[1] !== 'string' ||
-        typeof data.canVote !== 'boolean'
-      ) {
-        return;
-      }
 
-      setVoteData({
-        prompt: data.prompt,
-        options: data.options,
-        canVote: data.canVote,
-      });
-      // Also clear the questions
-      setQuestions([]);
-      setRoundStage(RoundStage.VOTE);
+  /**
+   * When the client receives the question to vote on from the server
+   */
+  const handleVoteQuestion = (data: any) => {
+    // Validate the response object
+    if (
+      typeof data.prompt !== 'string' ||
+      !Array.isArray(data.options) ||
+      !(data.options.length === 2) ||
+      typeof data.options[0] !== 'string' ||
+      typeof data.options[1] !== 'string' ||
+      typeof data.canVote !== 'boolean'
+    ) {
+      return;
+    }
+
+    setVoteData({
+      prompt: data.prompt,
+      options: data.options,
+      canVote: data.canVote,
     });
+    // Also clear the questions
+    setQuestions([]);
+    setRoundStage(RoundStage.VOTE);
   }
-  if (!globalState.socket.hasListeners('hilarVoteResult')) {
-    globalState.socket.on('hilarVoteResult', (data) => {
-      // Validate the response object
-      if (
-        typeof data.winner !== 'number' ||
-        typeof data.p1name !== 'string' ||
-        typeof data.p2name !== 'string' ||
-        typeof data.newScore1 !== 'number' ||
-        typeof data.newScore2 !== 'number' ||
-        typeof data.scoreChange !== 'number'
-      ) {
-        console.error('HVR result error');
-        return;
-      }
 
-      setVoteResult(data);
-      setRoundStage(RoundStage.RESULTS);
-    });
+  /**
+   * When the client receives the result of the vote from the server
+   */
+  const handleVoteResult = (data: any) => {
+    // Validate the response object
+    if (
+      typeof data.winner !== 'number' ||
+      typeof data.p1name !== 'string' ||
+      typeof data.p2name !== 'string' ||
+      typeof data.newScore1 !== 'number' ||
+      typeof data.newScore2 !== 'number' ||
+      typeof data.scoreChange !== 'number'
+    ) {
+      console.error('HVR result error');
+      return;
+    }
+
+    setVoteResult(data);
+    setRoundStage(RoundStage.RESULTS);
   }
-  if (!globalState.socket.hasListeners('hilarLeaderboard')) {
-    globalState.socket.on('hilarLeaderboard', (data) => {
-      // Validate the response object
-      if (
-        !Array.isArray(data.standings) ||
-        !(data.standings.length > 0) ||
-        typeof data.standings[0].userId !== 'string' ||
-        typeof data.standings[0].score !== 'number'
-      ) {
-        console.error('leaderboard failure');
-        return;
-      }
 
-      setStandings(data.standings);
-      setRoundStage(RoundStage.LEADERBOARD);
-    });
+  /**
+   * When the client receives leaderboard data from the server
+   */
+  const handleLeaderboard = (data: any) => {
+    // Validate the response object
+    if (
+      !Array.isArray(data.standings) ||
+      !(data.standings.length > 0) ||
+      typeof data.standings[0].userId !== 'string' ||
+      typeof data.standings[0].score !== 'number'
+    ) {
+      console.error('leaderboard failure');
+      return;
+    }
+
+    setStandings(data.standings);
+    setRoundStage(RoundStage.LEADERBOARD);
   }
 
   // Load if not started
-  if (!hasStarted) {
+  if (!hasBegun) {
     return <WaitScreen />;
   }
 
