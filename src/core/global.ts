@@ -17,6 +17,7 @@ export const FRIEND_REQUEST_LIST_PATH = GLOBAL_BASE_URL + '/friends/request';
 export const FRIEND_REQUEST_ACCEPT_PATH = GLOBAL_BASE_URL + '/friends/request/accept';
 export const FRIEND_REQUEST_DECLINE_PATH = GLOBAL_BASE_URL + '/friends/request/decline';
 export const FRIEND_REMOVE_PATH = GLOBAL_BASE_URL + '/friends';
+export const FRIEND_GAME_LIST_PATH = GLOBAL_BASE_URL + '/friends/games';
 
 export const HOMEPAGE_DATA_REFRESH_INTERVAL = 3000; // ms
 

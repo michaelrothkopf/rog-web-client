@@ -7,6 +7,14 @@ export interface GameMetadata {
   maxPlayers: number;
 }
 
+export interface OutsiderGameData {
+  joinCode: string;
+  numJoined: number;
+  maxPlayers: number;
+  friendlyName: string;
+  creatorDisplayName: string;
+}
+
 export const AVAILABLE_GAMES: GameMetadata[] = [
   { gameId: 'HILAR', friendlyName: 'Hilar', minPlayers: 2, maxPlayers: 8 },
   { gameId: 'DUEL', friendlyName: 'Duel', minPlayers: 2, maxPlayers: 2 },

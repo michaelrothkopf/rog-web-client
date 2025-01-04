@@ -1,0 +1,52 @@
+.game-data-input {
+  margin-top: 1rem;
+}
+
+.join-game {
+  display: block;
+  margin-top: 0.5rem;
+}
+
+h3 {
+  margin-top: 1rem;
+}
+
+.cards {
+  width: 100%;
+  margin-top: 0.75rem;
+}
+
+.friend-game-card {
+  width: 100%;
+  padding: 0.5rem;
+  /* margin-top: 0.5rem; */
+  margin-bottom: 0.1rem;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  /* border: 1px solid var(--input-border); */
+  border-radius: 4px;
+}
+
+.left {
+  text-align: left;
+  flex: 1;
+}
+
+.right {
+  text-align: right;
+}
+
+.friend-game-card .creator-name {
+  font-weight: bold;
+  font-size: large;
+  margin-bottom: 0.5rem;
+}
+
+p.message {
+  margin-top: 1rem;
+  font-weight: normal;
+  font-size: normal;
+}

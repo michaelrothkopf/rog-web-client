@@ -11,7 +11,7 @@ import { gameStateHooks, useGameStore } from './hooks/gameStore';
 
 // Core logic for server-dependent actions
 import { setupAuth, validateAuthtoken, validateUser } from './core/auth';
-import { getFriendList, getFriendRequestsList } from './core/friends';
+import { getFriendGamesList, getFriendList, getFriendRequestsList } from './core/friends';
 import { globalState, IN_PRODUCTION } from './core/global';
 
 // Renderers for application components
@@ -37,6 +37,7 @@ function App() {
 
   const setFriends = useFriendStore((state) => state.setFriends);
   const setFriendRequests = useFriendStore((state) => state.setFriendRequests);
+  const setFriendGames = useFriendStore((state) => state.setFriendGames);
 
   const setGame = useGameStore((state) => state.setGame);
   const setPlayers = useGameStore((state) => state.setPlayers);
@@ -116,6 +117,11 @@ function App() {
       setFriendRequests(friendRequests);
     });
 
+    // Load the friend games
+    getFriendGamesList().then((friendGames) => {
+      setFriendGames(friendGames);
+    });
+
     // Add the socket listeners
     if (globalState.socket) {
       // When the client joins a game
@@ -147,6 +153,7 @@ function App() {
         }
       });
 
+      // When the server updates the players in the current game
       globalState.socket.on('gamePlayers', (data) => {
         if (
           !Array.isArray(data.players) ||

@@ -1,6 +1,6 @@
 import { ChangeEvent, useState } from 'react';
 import { AVAILABLE_GAMES, createGame } from '../../core/game';
-import './GameBox.css';
+import './CreateGameBox.css';
 
 function CreateGameBox() {
   const [selectedGame, setSelectedGame] = useState<string>(

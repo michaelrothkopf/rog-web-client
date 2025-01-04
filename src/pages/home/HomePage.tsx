@@ -7,13 +7,14 @@ import './Home.css';
 import SettingsBox from './SettingsBox';
 import { useFriendStore } from '../../hooks/friendStore';
 import { useEffect, useRef } from 'react';
-import { getFriendList, getFriendRequestsList } from '../../core/friends';
+import { getFriendGamesList, getFriendList, getFriendRequestsList } from '../../core/friends';
 import { HOMEPAGE_DATA_REFRESH_INTERVAL } from '../../core/global';
 
 function HomePage() {
   // Depend on the refresh functions
   const setFriends = useFriendStore((state) => state.setFriends);
   const setFriendRequests = useFriendStore((state) => state.setFriendRequests);
+  const setFriendGames = useFriendStore((state) => state.setFriendGames);
   
   // Use a reference to avoid creating two check intervals
   const checkInterval = useRef<number>(0);
@@ -33,6 +34,11 @@ function HomePage() {
       // Update the friend request data
       getFriendRequestsList().then((newFriendRequests) => {
         setFriendRequests(newFriendRequests);
+      });
+
+      // Update the friend games data
+      getFriendGamesList().then((friendGames) => {
+        setFriendGames(friendGames);
       });
     }, HOMEPAGE_DATA_REFRESH_INTERVAL);
 

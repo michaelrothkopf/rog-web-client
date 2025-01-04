@@ -1,5 +1,6 @@
 import { User } from './auth';
-import { FRIEND_LIST_PATH, FRIEND_REMOVE_PATH, FRIEND_REQUEST_LIST_PATH, HEADERS, BODY_HEADERS, FRIEND_REQUEST_ACCEPT_PATH, FRIEND_REQUEST_DECLINE_PATH, FRIEND_REQUEST_PATH } from './global';
+import { OutsiderGameData } from './game';
+import { FRIEND_LIST_PATH, FRIEND_REMOVE_PATH, FRIEND_REQUEST_LIST_PATH, HEADERS, BODY_HEADERS, FRIEND_REQUEST_ACCEPT_PATH, FRIEND_REQUEST_DECLINE_PATH, FRIEND_REQUEST_PATH, FRIEND_GAME_LIST_PATH } from './global';
 
 export interface FriendshipData {
   _id: string;
@@ -122,4 +123,21 @@ export const createFriendRequest = async (recipient: string): Promise<boolean> =
     method: 'POST',
     body: JSON.stringify({ recipient }),
   })).ok;
+}
+
+export const getFriendGamesList = async(): Promise<OutsiderGameData[]> => {
+  const response = await fetch(FRIEND_GAME_LIST_PATH, {
+    headers: HEADERS,
+    method: 'GET',
+  });
+
+  if (!response.ok) return [];
+
+  try {
+    const json = await response.json();
+    if (!('friendGames' in json)) return [];
+    return json.friendGames;
+  } catch {
+    return [];
+  }
 }
