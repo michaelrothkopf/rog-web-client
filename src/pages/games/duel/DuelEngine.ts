@@ -22,6 +22,7 @@ const WALL_COLOR = Color.fromHex('#111111');
 const SHOT_COLOR = Color.fromHex('#ff0000'); //'#FFD700');
 
 const INPUT_CHECK_INTERVAL = 25; // ms
+const AUTO_RENDER_INTERVAL = 50; // ms
 const SHOT_DISPLAY_TIME = 25; // ms
 
 export enum RoundStage {
@@ -63,6 +64,11 @@ export class DuelEngine extends LiveEngine {
     clearInterval(this.inputCheckInterval);
     this.inputCheckInterval = setInterval(() => {
       this.checkMovement();
+
+      // Also render if it's been enough time (prevents lingering shots if no server updates)
+      if (Date.now() - this.lastRender > AUTO_RENDER_INTERVAL) {
+        this.render();
+      }
     }, INPUT_CHECK_INTERVAL);
   }
 
@@ -347,6 +353,8 @@ export class DuelEngine extends LiveEngine {
     this.shots.push({
       userId, startX, startY, hitX, hitY, direction, hit, time: Date.now()
     });
+    // Also render the shot
+    this.render();
   }
 
   getControlledPlayer() {

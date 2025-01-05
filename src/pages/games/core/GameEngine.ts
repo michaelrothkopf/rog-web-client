@@ -1,6 +1,8 @@
 export abstract class GameEngine {
   ctx: CanvasRenderingContext2D;
 
+  lastRender: number = Date.now();
+
   /**
    * Creates a new GameEngine
    * @param canvas The canvas to render onto
@@ -18,6 +20,7 @@ export abstract class GameEngine {
    * Exposed render method (to support framerate limiting later)
    */
   render() {
+    this.lastRender = Date.now();
     this.draw();
   }
 
