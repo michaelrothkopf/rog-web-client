@@ -126,6 +126,7 @@ function App() {
     // Add the socket listeners
     if (globalState.socket) {
       // When the client joins a game
+      if (!globalState.socket.hasListeners('gameInfo'))
       globalState.socket.on('gameInfo', (data) => {
         if (
           !data.gameId ||
@@ -156,6 +157,7 @@ function App() {
       });
 
       // When the server updates the players in the current game
+      if (!globalState.socket.hasListeners('gamePlayers'))
       globalState.socket.on('gamePlayers', (data) => {
         if (
           !Array.isArray(data.players) ||
@@ -174,19 +176,30 @@ function App() {
       });
 
       // When a game starts
+      if (!globalState.socket.hasListeners('gameBegin'))
       globalState.socket.on('gameBegin', () => {
         beginGame();
       });
 
       // When when the client receives a game error
+      if (!globalState.socket.hasListeners('gameError'))
       globalState.socket.on('gameError', (data) => {
         console.error(data);
       });
 
       // When the client's game is terminated
+      if (!globalState.socket.hasListeners('gameEnd'))
       globalState.socket.on('gameEnd', (data) => {
         alert(data.message);
 
+        // Clear the game and clean up
+        resetGame();
+        navigate(CurrentPage.HOME);
+      });
+
+      // When the client leaves the game
+      if (!globalState.socket.hasListeners('gameLeave'))
+      globalState.socket.on('gameLeave', () => {
         // Clear the game and clean up
         resetGame();
         navigate(CurrentPage.HOME);

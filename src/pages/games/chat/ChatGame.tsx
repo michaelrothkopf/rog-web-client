@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { useGameStore } from '../../../hooks/gameStore';
+import { leaveGame, terminateGame } from '../../../core/game';
 
 import WaitScreen from '../WaitScreen';
 import ChatMessage, { MessageData } from './ChatMessage';
@@ -11,6 +12,7 @@ import './ChatGame.css';
 
 function ChatGame() {
   const hasBegun = useGameStore((state) => state.hasBegun);
+  const isHost = useGameStore((state) => state.isHost);
 
   const messageBox = useRef<HTMLInputElement>(null);
   const [messages, setMessages] = useState<MessageData[]>([]);
@@ -93,6 +95,10 @@ function ChatGame() {
             autoFocus
           />
           <button onClick={handleSend}>Send</button>
+        </div>
+        <div className='game-controls'>
+          <button onClick={leaveGame}>Leave</button>
+          {isHost ? <button onClick={terminateGame}>Close room for all</button> : <></>}
         </div>
       </div>
     </div>

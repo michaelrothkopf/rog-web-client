@@ -1,9 +1,7 @@
 import { useEffect } from 'react';
 
-import { AVAILABLE_GAMES, beginGame } from '../../core/game';
+import { AVAILABLE_GAMES, beginGame, terminateGame } from '../../core/game';
 import { useGameStore } from '../../hooks/gameStore';
-
-import { globalState } from '../../core/global';
 
 import './WaitScreen.css';
 
@@ -17,9 +15,8 @@ function WaitScreen() {
   const keydownListener = (e: KeyboardEvent) => {
     // Exit the game (only if host)
     if (e.code === 'Escape' && isHost) {
-      if (!globalState.socket) return;
       if (confirm(`Do you really want to end the game? This will kick all players and return you to the home screen.`)) {
-        globalState.socket.emit('terminateGame');
+        terminateGame();
       }
     }
   }

@@ -35,3 +35,13 @@ export const beginGame = () => {
   if (!globalState.socket) return;
   globalState.socket.emit('beginGame');
 }
+
+export const terminateGame = () => {
+  if (!globalState.socket) return;
+  globalState.socket.emit('terminateGame');
+}
+
+export const leaveGame = () => {
+  if (!globalState.socket) return;
+  globalState.socket.emit('leaveGame');
+}

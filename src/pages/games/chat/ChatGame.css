@@ -43,3 +43,12 @@
   flex: 1;
   margin-right: 0.5rem;
 }
+
+.game-controls {
+  width: 100%;
+  padding-top: 0.5rem;
+}
+
+.game-controls button {
+  margin-right: 0.5rem;
+}
