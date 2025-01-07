@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io-client';
 
-export const PRODUCTION_BASE_URL = 'http://reroutemr.zapto.org:8141';
+export const PRODUCTION_BASE_URL = 'https://rog.michaelrothkopf.com/server';
 export const DEVELOPMENT_BASE_URL = 'http://localhost:8141';
 export const IN_PRODUCTION = import.meta.env.MODE === 'production';
 
