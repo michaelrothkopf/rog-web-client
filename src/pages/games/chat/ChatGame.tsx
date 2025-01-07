@@ -26,7 +26,9 @@ function ChatGame() {
       }
     }
 
+    // When the chat game will dismount
     return () => {
+      // Remove the new message handler
       if (globalState.socket) {
         globalState.socket.removeAllListeners('chatNewMessage');
       }
@@ -57,6 +59,15 @@ function ChatGame() {
     setMessages(old => [...old, data]);
   }
 
+  /**
+   * When the enter button is pressed, send the message
+   */
+  const handleKeydownInput = (e: any) => {
+    if (e.code === 'Enter') {
+      handleSend();
+    }
+  }
+
   // When the user wants to send a message
   const handleSend = () => {
     // If the socket and message box are both valid (should always be true)
@@ -68,6 +79,9 @@ function ChatGame() {
 
       // Clear the message box
       messageBox.current.value = '';
+
+      // Refocus the message box
+      messageBox.current.focus();
     }
   }
 
@@ -92,6 +106,7 @@ function ChatGame() {
             id='message'
             placeholder='Type a message'
             ref={messageBox}
+            onKeyDown={handleKeydownInput}
             autoFocus
           />
           <button onClick={handleSend}>Send</button>

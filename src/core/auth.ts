@@ -3,7 +3,6 @@ import {
   AUTH_LOGIN_PATH, AUTH_SIGNUP_PATH, CHANGE_PASSWORD_PATH,
   globalState,
   HEADERS, BODY_HEADERS,
-  SOCKET_CONNECTION_PATH, SOCKET_URL_BASE,
   VALIDATE_AUTHTOKEN_PATH,
 } from './global';
 
@@ -74,11 +73,12 @@ export const setupAuth = (authData: AuthData) => {
   HEADERS.set('Authtoken', authData.token);
 
   // Connect to the live server
-  globalState.socket = io(SOCKET_URL_BASE, {
-    path: SOCKET_CONNECTION_PATH,
+  globalState.socket = io('https://rog.michaelrothkopf.com', {
+    path: '/server/live/socket.io',
     auth: {
       token: authData.token,
     },
+    transports: ['websocket']
   });
 }
 
