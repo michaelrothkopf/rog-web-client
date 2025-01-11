@@ -14,7 +14,10 @@ function ChatMessage(props: { message: MessageData }) {
         <span className='content'>{props.message.content}</span>
       </div>
       <div className='right'>
-        <span className='timestamp'>{new Date(props.message.timestamp).toLocaleTimeString()}</span>
+        <span className='timestamp'>{new Date(props.message.timestamp).toLocaleTimeString([], {
+          hour: 'numeric',
+          minute: 'numeric',
+        })}</span>
       </div>
     </div>
   );

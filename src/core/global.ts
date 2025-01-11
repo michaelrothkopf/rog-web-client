@@ -26,7 +26,7 @@ export const BODY_HEADERS = new Headers();
 BODY_HEADERS.set('Content-Type', 'application/json');
 
 export const SOCKET_URL_BASE = GLOBAL_BASE_URL;
-export const SOCKET_CONNECTION_PATH = SOCKET_URL_BASE + '/live/socket.io/';
+export const SOCKET_CONNECTION_PATH = '/server/live/socket.io'
 
 interface GlobalState {
   socket: Socket | null,
