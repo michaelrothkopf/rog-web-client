@@ -19,6 +19,7 @@
 
 .right {
   text-align: right;
+  padding-left: 2rem;
 }
 
 .message .sender {

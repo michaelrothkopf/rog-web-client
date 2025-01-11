@@ -60,4 +60,11 @@
 .game-controls .typing-indicator {
   flex: 1;
   text-align: right;
+  animation: text-pulse 1s infinite alternate ease-in-out;
+}
+
+@keyframes text-pulse {
+  0% { opacity: 80%; }
+  50% { opacity: 100%; }
+  100% { opacity: 80%; }
 }
