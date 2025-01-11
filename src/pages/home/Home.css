@@ -13,7 +13,7 @@ h1 {
     gap: 0.5rem;
   }
   .home-grid-element {
-    aspect-ratio: 2 / 1;
+    aspect-ratio: 2 / 1.25;
     padding: 1rem;
   
     border: 1px solid var(--input-border);

@@ -25,7 +25,7 @@ function ChatGame() {
 
   const [usersCurrentlyTyping, setUsersCurrentlyTyping] = useState<TypingState[]>([]);
   const typingIndicatorInterval = useRef<number>(0);
-  const lastTypingIndication = useRef<number>(Date.now());
+  const lastTypingIndication = useRef<number>(Date.now() - TYPING_INDICATION_SEND_INTERVAL);
 
   // Create and cleanup event handlers
   useEffect(() => {
