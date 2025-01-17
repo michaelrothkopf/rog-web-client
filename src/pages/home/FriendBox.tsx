@@ -1,6 +1,7 @@
 import { getFriendList, removeFriend } from '../../core/friends';
 import { useAuthStore } from '../../hooks/authStore';
 import { useFriendStore } from '../../hooks/friendStore';
+import { formatDuration } from '../../utils/time';
 import './FriendBox.css';
 
 function FriendBox() {
@@ -45,7 +46,9 @@ function FriendBox() {
                   : f.initiator.username}
               </p>
               <span className='date'>
-                Since {new Date(f.acceptedAt).toLocaleDateString()}
+                Last seen {f.initiator.username === username
+                  ? (f.recipient.lastLogin > f.recipient.lastLogout ? `just now` : `${formatDuration(Date.now() - new Date(f.recipient.lastLogout).getTime())} ago`)
+                  : (f.initiator.lastLogin > f.initiator.lastLogout ? `just now` : `${formatDuration(Date.now() - new Date(f.initiator.lastLogout).getTime())} ago`)}
               </span>
             </div>
             <div className='right'>

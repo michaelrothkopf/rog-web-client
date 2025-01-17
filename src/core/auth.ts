@@ -59,6 +59,16 @@ const validateAuthData = (object): object is AuthData => {
 }
 
 /**
+ * Disconnect from the server
+ */
+const disconnectSocket = () => {
+  console.log('Before unload');
+  if (globalState.socket) {
+    globalState.socket.disconnect();
+  }
+}
+
+/**
  * Resets authentication data in localStorage
  * @returns
  */
@@ -82,6 +92,9 @@ export const setupAuth = (authData: AuthData) => {
     },
     transports: ['websocket']
   });
+
+  // Add a page close event listener
+  window.addEventListener('beforeunload', disconnectSocket);
 }
 
 export const validateAuthtoken = async (authtoken: string) => {
