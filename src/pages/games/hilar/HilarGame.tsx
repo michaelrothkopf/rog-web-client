@@ -8,6 +8,7 @@ import QuestionPrompt from './QuestionPrompt';
 import VoteBox from './VoteBox';
 import Leaderboard from './Leaderboard';
 import ResultDisplay from './ResultDisplay';
+import HilarControlsBar from './HilarControlsBar';
 
 enum RoundStage {
   LOAD,
@@ -227,13 +228,19 @@ function HilarGame() {
   if (roundStage === RoundStage.RESPOND && questions.length > 0) {
     return (
       <div className='hilar-game'>
-        <QuestionPrompt prompt={questions[0]} submitCallback={handleResponse} />
+        <HilarControlsBar />
+        <div className='hilar-content'>
+          <QuestionPrompt prompt={questions[0]} submitCallback={handleResponse} />
+        </div>
       </div>
     );
   } else if (roundStage === RoundStage.RESPOND) {
     return (
       <div className='hilar-game'>
-        <p>Waiting for other responses...</p>
+        <HilarControlsBar />
+        <div className='hilar-content'>
+          <p>Waiting for other responses...</p>
+        </div>
       </div>
     );
   }
@@ -242,18 +249,25 @@ function HilarGame() {
   if (roundStage === RoundStage.VOTE && voteData.canVote) {
     return (
       <div className='hilar-game'>
-        <VoteBox
-          prompt={voteData.prompt}
-          voteCallback={handleVote}
-          firstOption={voteData.options[0]}
-          secondOption={voteData.options[1]}
-        />
+        <HilarControlsBar />
+        <div className='hilar-content'>
+          <VoteBox
+            prompt={voteData.prompt}
+            voteCallback={handleVote}
+            firstOption={voteData.options[0]}
+            secondOption={voteData.options[1]}
+          />
+        </div>
+        
       </div>
     );
   } else if (roundStage === RoundStage.VOTE && voteData.options.length > 0) {
     return (
       <div className='hilar-game'>
-        <p>Waiting for votes...</p>
+        <HilarControlsBar />
+        <div className='hilar-content'>
+          <p>Waiting for votes...</p>
+        </div>
       </div>
     );
   }
@@ -262,7 +276,10 @@ function HilarGame() {
   if (roundStage === RoundStage.RESULTS) {
     return (
       <div className='hilar-game'>
-        <ResultDisplay results={voteResult} />
+        <HilarControlsBar />
+        <div className='hilar-content'>
+          <ResultDisplay results={voteResult} />
+        </div>
       </div>
     );
   }
@@ -271,7 +288,10 @@ function HilarGame() {
   if (roundStage === RoundStage.LEADERBOARD) {
     return (
       <div className='hilar-game'>
-        <Leaderboard standings={standings} />
+        <HilarControlsBar />
+        <div className='hilar-content'>
+          <Leaderboard standings={standings} />
+        </div>
       </div>
     );
   }
@@ -279,7 +299,10 @@ function HilarGame() {
   // roundStage === RoundStage.LOAD
   return (
     <div className='hilar-game'>
-      <p>Waiting...</p>
+      <HilarControlsBar />
+        <div className='hilar-content'>
+          <p>Waiting...</p>
+        </div>
     </div>
   );
 }

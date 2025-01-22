@@ -1,10 +1,22 @@
 .hilar-game {
-  /* Make the game take up the entire screen and center its content */
+  /* Make the game take up the entire screen */
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
+
+  /* Make the game a flex container so the controls takes up minimal space */
+  display: flex;
+  flex-direction: column;
+}
+
+.hilar-game .hilar-content {
+  /* Game content takes up maximum space */
+  flex: 1;
+  width: 100%;
+
+  /* Center the game content */
   display: flex;
   flex-direction: row;
   justify-content: center;
