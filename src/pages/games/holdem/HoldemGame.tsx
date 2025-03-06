@@ -11,15 +11,15 @@ import Controls, { BettingAction } from './Controls';
 import { PlayerData } from './PlayerInfo';
 
 // The current round stage
-enum RoundStage {
-  LOBBY,
-  BETTING,
-  PREFLOP,
-  FLOP,
-  TURN,
-  RIVER,
-  SHOWDOWN
-}
+// enum RoundStage {
+//   LOBBY,
+//   BETTING,
+//   PREFLOP,
+//   FLOP,
+//   TURN,
+//   RIVER,
+//   SHOWDOWN
+// }
 
 function HoldemGame() {
   const hasBegun = useGameStore((state) => state.hasBegun);
