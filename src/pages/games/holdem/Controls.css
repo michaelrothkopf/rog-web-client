@@ -1,0 +1,64 @@
+.holdem-controls {
+  padding: 0 5%;
+
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.holdem-controls .holdem-controls-squeeze {
+  flex: 1;
+}
+
+.holdem-controls .name {
+  font-size: 2rem;
+  text-align: center;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.holdem-controls .money {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.holdem-controls .money .label {
+  flex: 1;
+  font-size: 1.25rem;
+}
+
+.holdem-controls .money .value {
+  font-size: 2rem;
+}
+
+.holdem-controls .call-amount {
+  width: 100%;
+  text-align: center;
+  margin-top: 0.75rem;
+}
+
+.holdem-controls .call-amount.betting-turn-inactive {
+  opacity: 0;
+}
+
+.holdem-controls .cards {
+  margin: 1rem 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 0.25rem;
+}
+
+.holdem-controls .actions {
+  display: grid;
+  row-gap: 0.3rem;
+
+  margin-top: 1rem;
+}
+
+.holdem-controls .history {
+  flex: 1;
+  overflow: hidden;
+}

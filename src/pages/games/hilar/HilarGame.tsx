@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react';
 import { globalState } from '../../../core/global';
 import { useGameStore } from '../../../hooks/gameStore';
 import WaitScreen from '../WaitScreen';
+import GameControlsBar from '../core/GameControlsBar';
 
 import './HilarGame.css';
 import QuestionPrompt from './QuestionPrompt';
 import VoteBox from './VoteBox';
 import Leaderboard from './Leaderboard';
 import ResultDisplay from './ResultDisplay';
-import HilarControlsBar from './HilarControlsBar';
 
 enum RoundStage {
   LOAD,
@@ -228,7 +228,7 @@ function HilarGame() {
   if (roundStage === RoundStage.RESPOND && questions.length > 0) {
     return (
       <div className='hilar-game'>
-        <HilarControlsBar />
+        <GameControlsBar name='hilar' />
         <div className='hilar-content'>
           <QuestionPrompt prompt={questions[0]} submitCallback={handleResponse} />
         </div>
@@ -237,7 +237,7 @@ function HilarGame() {
   } else if (roundStage === RoundStage.RESPOND) {
     return (
       <div className='hilar-game'>
-        <HilarControlsBar />
+        <GameControlsBar name='hilar' />
         <div className='hilar-content'>
           <p>Waiting for other responses...</p>
         </div>
@@ -249,7 +249,7 @@ function HilarGame() {
   if (roundStage === RoundStage.VOTE && voteData.canVote) {
     return (
       <div className='hilar-game'>
-        <HilarControlsBar />
+        <GameControlsBar name='hilar' />
         <div className='hilar-content'>
           <VoteBox
             prompt={voteData.prompt}
@@ -264,7 +264,7 @@ function HilarGame() {
   } else if (roundStage === RoundStage.VOTE && voteData.options.length > 0) {
     return (
       <div className='hilar-game'>
-        <HilarControlsBar />
+        <GameControlsBar name='hilar' />
         <div className='hilar-content'>
           <p>Waiting for votes...</p>
         </div>
@@ -276,7 +276,7 @@ function HilarGame() {
   if (roundStage === RoundStage.RESULTS) {
     return (
       <div className='hilar-game'>
-        <HilarControlsBar />
+        <GameControlsBar name='hilar' />
         <div className='hilar-content'>
           <ResultDisplay results={voteResult} />
         </div>
@@ -288,7 +288,7 @@ function HilarGame() {
   if (roundStage === RoundStage.LEADERBOARD) {
     return (
       <div className='hilar-game'>
-        <HilarControlsBar />
+        <GameControlsBar name='hilar' />
         <div className='hilar-content'>
           <Leaderboard standings={standings} />
         </div>
@@ -299,7 +299,7 @@ function HilarGame() {
   // roundStage === RoundStage.LOAD
   return (
     <div className='hilar-game'>
-      <HilarControlsBar />
+      <GameControlsBar name='hilar' />
         <div className='hilar-content'>
           <p>Waiting...</p>
         </div>

@@ -48,7 +48,7 @@ function WaitScreen() {
       <div className='ws-content'>
         <h2>
           {isHost
-            ? `You're the host! Press "begin game" below when you're ready.`
+            ? `You're the host! Press 'begin game' below when you're ready.`
             : `Waiting for the host to start the game...`}
         </h2>
         {isHost ? <h3>Press escape to terminate the game.</h3> : <></>}

@@ -23,7 +23,7 @@ function JoinGameBox() {
   return (
     <div className='home-grid-element'>
       <h2>Join a Game</h2>
-      <div className="join-input">
+      <div className='join-input'>
         <input
           type='text'
           name='join-code'

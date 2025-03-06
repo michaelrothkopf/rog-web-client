@@ -1,4 +1,4 @@
-.hilar-controls-bar {
+.game-controls-bar {
   background-color: var(--input-bg-focus);
   /* Maximum width but with padding around the edges */
   width: 100%;
@@ -12,17 +12,17 @@
 }
 
 /* Spacing in the middle takes up most space */
-.hilar-controls-bar span.spacing {
+.game-controls-bar span.spacing {
   flex: 1;
   text-align: center;
 }
 
-.hilar-controls-bar span.end-game {
+.game-controls-bar span.end-game {
   cursor: pointer;
   color: var(--text-primary);
   border-bottom: 1px solid var(--input-bg-focus);
   transition: border-color 0.2s;
 }
-.hilar-controls-bar span.end-game:hover {
+.game-controls-bar span.end-game:hover {
   border-color: var(--text-highlight);
 }

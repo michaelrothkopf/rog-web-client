@@ -19,6 +19,7 @@ import NavBar from './components/navigation/NavBar';
 import HomePage from './pages/home/HomePage';
 import AuthPage from './pages/auth/AuthPage';
 import ChangePasswordPage from './pages/auth/ChangePasswordPage';
+import HoldemGame from './pages/games/holdem/HoldemGame';
 import HilarGame from './pages/games/hilar/HilarGame';
 import DuelGame from './pages/games/duel/DuelGame';
 import ChatGame from './pages/games/chat/ChatGame';
@@ -142,6 +143,9 @@ function App() {
 
         // Navigate to the correct game
         switch (data.gameId) {
+          case 'HOLDEM':
+            navigate(CurrentPage.HOLDEM);
+            break;
           case 'HILAR':
             navigate(CurrentPage.HILAR);
             break;
@@ -231,6 +235,13 @@ function App() {
     );
   }
 
+  if (currentPage === CurrentPage.HOLDEM) {
+    return (
+      <div className={colorScheme}>
+        <HoldemGame />
+      </div>
+    );
+  }
   if (currentPage === CurrentPage.HILAR) {
     return (
       <div className={colorScheme}>

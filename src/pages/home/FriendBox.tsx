@@ -14,7 +14,7 @@ function FriendBox() {
   const handleRemoveFriend = (friend: string, username: string) => {
     if (
       confirm(
-        `Are you sure you want to remove friend "${username}"? You'll have to send him or her another friend request to become friends again.`
+        `Are you sure you want to remove friend '${username}'? You'll have to send him or her another friend request to become friends again.`
       )
     ) {
       removeFriend(friend).then((success) => {

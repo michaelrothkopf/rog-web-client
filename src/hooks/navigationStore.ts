@@ -7,6 +7,7 @@ export enum CurrentPage {
   CHANGE_PASSWORD,
 
   // Games
+  HOLDEM,
   HILAR,
   DUEL,
 }

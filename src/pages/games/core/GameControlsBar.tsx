@@ -1,9 +1,9 @@
-import './HilarControlsBar.css';
+import './GameControlsBar.css';
 
 import { terminateGame } from '../../../core/game';
 import { useGameStore } from '../../../hooks/gameStore';
 
-function HilarControlsBar() {
+function GameControlsBar(props: { name: string }) {
   const isHost = useGameStore((state) => state.isHost);
 
   // When the user pushes the 'End Game for All' button
@@ -15,12 +15,12 @@ function HilarControlsBar() {
   }
 
   return (
-    <div className='hilar-controls-bar'>
-      <span>Hilar</span>
+    <div className='game-controls-bar'>
+      <span>{props.name}</span>
       <span className='spacing'></span>
       {isHost ? <span className='end-game' onClick={handleTerminate}>End Game for All</span> : <></>}
     </div>
   );
 }
 
-export default HilarControlsBar;
+export default GameControlsBar;

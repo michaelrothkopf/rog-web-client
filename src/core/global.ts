@@ -28,6 +28,8 @@ BODY_HEADERS.set('Content-Type', 'application/json');
 export const SOCKET_URL_BASE = IN_PRODUCTION ? 'https://rog.michaelrothkopf.com' : 'http://localhost:8141';
 export const SOCKET_CONNECTION_PATH = '/server/live/socket.io';
 
+export const CARD_IMAGE_BASE_PATH = '/img/cards/';
+
 interface GlobalState {
   socket: Socket | null,
 }

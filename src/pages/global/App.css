@@ -7,6 +7,7 @@
   --text-link: rgb(11, 124, 200);
   --text-link-hover: rgb(0, 66, 111);
   --text-green: rgb(19, 172, 19);
+  --text-gold: rgb(255, 215, 0);
 
   --input-border: rgb(210, 210, 210);
   --input-bg: rgb(255, 255, 255);
@@ -19,6 +20,7 @@
   --button-bg-hover: rgb(240, 240, 240);
   --button-bg-active: rgb(230, 230, 230);
   --button-text: rgb(0, 0, 0);
+  --button-text-disabled: rgb(200, 200, 200);
 }
 
 .dark-mode {
@@ -30,6 +32,7 @@
   --text-link: rgb(116, 185, 232);
   --text-link-hover: rgb(90, 162, 211);
   --text-green: rgb(60, 219, 60);
+  --text-gold: rgb(255, 215, 0);
 
   --input-border: rgb(65, 65, 65);
   --input-bg: rgb(0, 0, 0);
@@ -42,6 +45,7 @@
   --button-bg-hover: rgb(15, 15, 15);
   --button-bg-active: rgb(30, 30, 30);
   --button-text: rgb(220, 220, 220);
+  --button-text-disabled: rgb(56, 56, 56);
 }
 
 .light-mode > div {
@@ -108,6 +112,14 @@ button:active {
 button.x-button {
   font-size: 1rem;
   padding: 0.68rem 0.94rem;
+}
+button.disabled {
+  cursor: default;
+  color: var(--button-text-disabled);
+  border: none;
+}
+button.disabled:hover {
+  background-color: var(--button-bg);
 }
 
 select {

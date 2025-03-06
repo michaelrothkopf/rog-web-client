@@ -1,0 +1,54 @@
+.holdem-player-info {
+  padding: 0.5rem;
+  text-align: center;
+}
+
+.holdem-player-info .name {
+  padding: 5px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  border-radius: 5px;
+  color: black;
+  background-color: white;
+  transition: background-color 0.5s;
+}
+
+.holdem-player-info .name .button-label {
+  color: red;
+}
+
+.holdem-player-info .balance {
+  margin: 0.5rem 0;
+  padding: 5px;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: green;
+
+  background-color: white;
+  border-radius: 5px;
+}
+
+.holdem-player-info .hole-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  column-gap: 0.25rem;
+
+  width: 100%;
+}
+
+.holdem-player-info-active .name {
+  background-color: var(--text-gold);
+}
+
+.holdem-player-info-waiting .name {
+  background-color: white;
+}
+
+.holdem-player-info-folded .name {
+  background-color: white;
+}
+
+.holdem-player-info-folded {
+  opacity: 35%;
+}

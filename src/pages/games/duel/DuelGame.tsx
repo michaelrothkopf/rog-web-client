@@ -125,7 +125,7 @@ function DuelGame(props: { devBypass?: boolean }) {
   }
 
   return (
-    <canvas className="duel-game" id="duelGameCanvas" width={MAP_W} height={MAP_H} ref={canvas}>
+    <canvas className='duel-game' id='duelGameCanvas' width={MAP_W} height={MAP_H} ref={canvas}>
       
     </canvas>
   );

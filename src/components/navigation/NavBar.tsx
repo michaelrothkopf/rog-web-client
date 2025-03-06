@@ -16,7 +16,7 @@ function NavBar() {
           navigate(CurrentPage.HOME);
         }}
       />
-      <div className="nav-bar-separator"></div>
+      <div className='nav-bar-separator'></div>
       <NavLink
         pageName='Log Out'
         action={() => {
