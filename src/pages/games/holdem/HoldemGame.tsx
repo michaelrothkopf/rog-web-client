@@ -121,12 +121,19 @@ function HoldemGame() {
     let amount = 0;
     let pass = false;
     if (action === BettingAction.RAISE) {
-      while (!pass) {
-        try {
-          amount = parseInt(prompt(`Enter a whole number greater than $${callAmount} but less than or equal to $${BET_LIMIT} to raise by.`) || '0');
-          if (amount > callAmount && amount <= BET_LIMIT) pass = true;
+      // Cannot raise if the limit has already been reached
+      if (callAmount === BET_LIMIT) {
+        amount = callAmount;
+        action = BettingAction.CALL;
+      }
+      else {
+        while (!pass) {
+          try {
+            amount = parseInt(prompt(`Enter a whole number greater than $${callAmount} but less than or equal to $${BET_LIMIT} to raise by.`) || '0');
+            if (amount > callAmount && amount <= BET_LIMIT) pass = true;
+          }
+          catch {}
         }
-        catch {}
       }
     }
 
