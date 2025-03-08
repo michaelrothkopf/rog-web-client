@@ -10,6 +10,9 @@ import Table from './Table';
 import Controls, { BettingAction } from './Controls';
 import { PlayerData } from './PlayerInfo';
 
+// The maximum amount the player can bet
+const BET_LIMIT = 10;
+
 // The current round stage
 // enum RoundStage {
 //   LOBBY,
@@ -120,8 +123,8 @@ function HoldemGame() {
     if (action === BettingAction.RAISE) {
       while (!pass) {
         try {
-          amount = parseInt(prompt(`Enter a whole number greater than $${callAmount} to raise by.`) || '0');
-          if (amount > callAmount) pass = true;
+          amount = parseInt(prompt(`Enter a whole number greater than $${callAmount} but less than or equal to $${BET_LIMIT} to raise by.`) || '0');
+          if (amount > callAmount && amount <= BET_LIMIT) pass = true;
         }
         catch {}
       }
