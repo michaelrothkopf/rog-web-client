@@ -1,7 +1,7 @@
 import { Socket } from 'socket.io-client';
 
 export const PRODUCTION_BASE_URL = 'https://rog.michaelrothkopf.com/server';
-export const DEVELOPMENT_BASE_URL = 'http://localhost:8141';
+export const DEVELOPMENT_BASE_URL = 'http://192.168.1.197:8141';
 export const IN_PRODUCTION = import.meta.env.MODE === 'production';
 
 export const GLOBAL_BASE_URL = IN_PRODUCTION ? PRODUCTION_BASE_URL : DEVELOPMENT_BASE_URL;
@@ -25,7 +25,7 @@ export const HEADERS = new Headers();
 export const BODY_HEADERS = new Headers();
 BODY_HEADERS.set('Content-Type', 'application/json');
 
-export const SOCKET_URL_BASE = IN_PRODUCTION ? 'https://rog.michaelrothkopf.com' : 'http://localhost:8141';
+export const SOCKET_URL_BASE = IN_PRODUCTION ? 'https://rog.michaelrothkopf.com' : 'http://192.168.1.197:8141';
 export const SOCKET_CONNECTION_PATH = '/server/live/socket.io';
 
 export const CARD_IMAGE_BASE_PATH = '/img/cards/';
